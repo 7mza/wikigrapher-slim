@@ -1,0 +1,79 @@
+{
+  "name": "wikigrapher-slim",
+  "version": "0.0.1",
+  "description": "wikigrapher public release https://wikigrapher.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/7mza/wikigrapher-slim"
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": "github.com/7mza",
+  "scripts": {
+    "build": "npm run format && cross-env NODE_ENV=production npx webpack --mode=production",
+    "build:dev": "npm run format && cross-env NODE_ENV=development npx webpack --mode=development",
+    "clean": "npm cache verify",
+    "clear": "npm run clean",
+    "ncu": "npx ncu",
+    "format": "npx prettier **/*.{cjs,css,html,js,json,mjs,scss,tjs,ts,yaml,yml} --write",
+    "lint": "npx eslint"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@eslint/css": "^0.10.0",
+    "@eslint/js": "^9.32.0",
+    "@eslint/json": "^0.13.1",
+    "@eslint/markdown": "^7.1.0",
+    "@popperjs/core": "^2.11.8",
+    "@types/bootstrap": "^5.2.10",
+    "autoprefixer": "^10.4.21",
+    "babel-loader": "^10.0.0",
+    "bootstrap": "^5.3.7",
+    "bootstrap-icons": "^1.13.1",
+    "browserslist": "^4.25.1",
+    "core-js": "^3.45.0",
+    "cross-env": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.2",
+    "eslint": "^9.32.0",
+    "fork-ts-checker-webpack-plugin": "^9.1.0",
+    "glob": "^11.0.3",
+    "globals": "^16.3.0",
+    "mini-css-extract-plugin": "^2.9.3",
+    "npm-check-updates": "^18.0.2",
+    "postcss-loader": "^8.1.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-organize-attributes": "^1.0.0",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "purgecss-webpack-plugin": "^7.0.2",
+    "regenerator-runtime": "^0.14.1",
+    "sass": "^1.90.0",
+    "sass-loader": "^16.0.5",
+    "style-loader": "^4.0.0",
+    "terser-webpack-plugin": "^5.3.14",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.0",
+    "vis-network": "^10.0.1",
+    "webpack": "^5.101.0",
+    "webpack-assets-manifest": "^6.2.2",
+    "webpack-cli": "^6.0.1"
+  },
+  "prettier": {
+    "attributeSort": "ASC",
+    "bracketSameLine": true,
+    "plugins": [
+      "prettier-plugin-organize-attributes",
+      "prettier-plugin-tailwindcss"
+    ],
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "singleAttributePerLine": true
+  },
+  "browserslist": [
+    "defaults and fully supports es6-module",
+    "not dead"
+  ]
+}

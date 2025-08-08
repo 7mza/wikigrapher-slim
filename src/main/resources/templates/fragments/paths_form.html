@@ -1,0 +1,173 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div
+      class="formz bg-body container mt-3 rounded border py-3 text-center"
+      th:fragment="paths_form">
+      <div class="row g-3 align-items-center mb-3">
+        <div class="input-group">
+          <span class="input-group-text"
+            ><i class="bi bi-box-arrow-in-right"></i
+          ></span>
+          <input
+            class="form-control"
+            id="source-input"
+            data-bs-delay='{"show":1000,"hide":150}'
+            data-bs-placement="bottom"
+            data-bs-title="Source page"
+            data-bs-toggle="tooltip"
+            placeholder="Source page"
+            type="text"
+            th:value="${source}" />
+        </div>
+        <div class="input-group">
+          <button
+            class="btn"
+            id="reverse-button"
+            data-bs-delay='{"show":1000,"hide":150}'
+            data-bs-placement="bottom"
+            data-bs-title="Reverse source & target"
+            data-bs-toggle="tooltip">
+            <i class="bi bi bi-arrow-down-up"></i>
+          </button>
+        </div>
+        <div class="input-group">
+          <span class="input-group-text"
+            ><i class="bi bi-box-arrow-left"></i
+          ></span>
+          <input
+            class="form-control"
+            id="target-input"
+            data-bs-delay='{"show":1000,"hide":150}'
+            data-bs-placement="bottom"
+            data-bs-title="Target page"
+            data-bs-toggle="tooltip"
+            placeholder="Target page"
+            type="text"
+            th:value="${target}" />
+        </div>
+      </div>
+      <div class="row g-3 align-items-center mb-3">
+        <div
+          th:replace="~{fragments/pagination_control :: pagination_control}"></div>
+      </div>
+      <div class="row g-3 align-items-center mb-3">
+        <div class="col-auto">
+          <div class="input-group">
+            <span class="input-group-text">solver</span>
+            <select
+              class="form-select"
+              id="solver-select"
+              aria-label="solver"
+              data-bs-delay='{"show":1000,"hide":150}'
+              data-bs-placement="bottom"
+              data-bs-title="vis network solver"
+              data-bs-toggle="tooltip">
+              <option
+                selected
+                value="barnesHut">
+                barnesHut
+              </option>
+              <option value="repulsion">repulsion</option>
+              <option value="hierarchicalRepulsion">
+                hierarchicalRepulsion
+              </option>
+              <option value="forceAtlas2Based">forceAtlas2Based</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3 align-items-center mb-3">
+        <div class="col-auto">
+          <div class="input-group">
+            <div class="form-check form-switch">
+              <label
+                class="form-check-label"
+                for="hierarchical-checkbox"
+                >hierarchical</label
+              >
+              <input
+                class="form-check-input"
+                id="hierarchical-checkbox"
+                data-bs-delay='{"show":1000,"hide":150}'
+                data-bs-placement="bottom"
+                data-bs-title="vis network hierarchical solver"
+                data-bs-toggle="tooltip"
+                role="switch"
+                type="checkbox" />
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="input-group">
+            <span class="input-group-text">direction</span>
+            <select
+              class="form-select"
+              id="direction-select"
+              aria-label="direction"
+              data-bs-delay='{"show":1000,"hide":150}'
+              data-bs-placement="bottom"
+              data-bs-title="hierarchical solver direction"
+              data-bs-toggle="tooltip">
+              <option value="UD">UD</option>
+              <option value="DU">DU</option>
+              <option
+                selected
+                value="LR">
+                LR
+              </option>
+              <option value="RL">RL</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3 align-items-center mb-3">
+        <div class="col-auto">
+          <button
+            class="btn btn-outline-dark bi bi-gear-fill"
+            id="graph-button"
+            data-bs-delay='{"show":1000,"hide":150}'
+            data-bs-placement="bottom"
+            data-bs-title="Fetch & plot path between source & target"
+            data-bs-toggle="tooltip">
+            plot
+          </button>
+        </div>
+        <div class="col-auto">
+          <button
+            class="btn btn-outline-dark bi bi-shuffle"
+            id="random-button"
+            data-bs-delay='{"show":1000,"hide":150}'
+            data-bs-placement="bottom"
+            data-bs-title="Fetch & plot path between random source & random target"
+            data-bs-toggle="tooltip">
+            random
+          </button>
+        </div>
+        <div class="col-auto">
+          <button
+            class="btn btn-outline-dark bi bi-cloud-arrow-down-fill"
+            id="download-button"
+            data-bs-delay='{"show":1000,"hide":100}'
+            data-bs-placement="bottom"
+            data-bs-title="download all paths between source & target"
+            data-bs-toggle="tooltip">
+            download
+          </button>
+        </div>
+        <div class="col-auto">
+          <button
+            class="btn btn-outline-dark bi bi-x-lg"
+            id="clear-button">
+            clear
+          </button>
+        </div>
+        <div class="col-auto">
+          <div id="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

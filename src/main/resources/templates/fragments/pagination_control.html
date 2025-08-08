@@ -1,0 +1,35 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="pagination_control">
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text">skip</span>
+            <input
+              class="form-control"
+              th:attr="id='skip-input', data-bs-title='skip initial n paths', placeholder='skip initial n paths', value=0"
+              data-bs-delay='{"show":1000,"hide":150}'
+              data-bs-placement="bottom"
+              data-bs-toggle="tooltip"
+              type="number" />
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text">limit</span>
+            <input
+              class="form-control"
+              th:attr="id='limit-input', data-bs-title='limit to n paths', placeholder='limit to n paths', value=1"
+              data-bs-delay='{"show":1000,"hide":150}'
+              data-bs-placement="bottom"
+              data-bs-toggle="tooltip"
+              type="number" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

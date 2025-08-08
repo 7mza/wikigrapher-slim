@@ -1,0 +1,67 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <footer
+      class="footer bg-body-tertiary mt-auto rounded border p-1 text-center"
+      th:fragment="footer">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-auto">
+            <ul class="nav justify-content-center flex-wrap gap-3">
+              <li class="nav-item">
+                <span class="nav-link text-body-secondary disabled-a px-2"
+                  >wikigrapher-slim v0.0.1-alpha</span
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link text-body-secondary px-2"
+                  th:href="@{/swagger-ui}"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  >api</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link text-body-secondary px-2"
+                  href="mailto:alias.ducky891@passinbox.com"
+                  rel="noopener noreferrer">
+                  contact dev
+                </a>
+              </li>
+              <li class="nav-item">
+                <button
+                  class="nav-link text-body-secondary btn btn-link px-2"
+                  id="popoverLink"
+                  data-bs-content='
+<a class="btn btn-sm btn-outline-dark" href="https://github.com/7mza/wikigrapher-generator" rel="noopener noreferrer" target="_blank">wikigrapher-generator</a>
+<br/>
+<br/>
+<a class="btn btn-sm btn-outline-dark" href="https://github.com/7mza/wikigrapher-slim" rel="noopener noreferrer" target="_blank">wikigrapher-slim</a>
+'
+                  data-bs-html="true"
+                  data-bs-toggle="popover"
+                  data-bs-trigger="focus"
+                  type="button">
+                  <i class="bi bi-github me-1"></i> GitHub
+                </button>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link text-body-secondary px-2"
+                  href="https://buymeacoffee.com/7mza"
+                  rel="noopener noreferrer"
+                  target="_blank">
+                  <i class="bi bi-cup-hot"></i> Buy me a Coffee
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

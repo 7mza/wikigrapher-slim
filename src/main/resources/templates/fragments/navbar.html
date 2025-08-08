@@ -1,0 +1,57 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <nav
+      class="navbar navbar-expand-lg bg-body-tertiary rounded border p-1"
+      th:fragment="navbar">
+      <div class="container-fluid">
+        <a
+          class="navbar-brand"
+          th:href="@{/}">
+          <img
+            alt="wikigrapher logo"
+            height="30"
+            th:src="@{/images/wikigrapher.png}"
+            width="30" />
+          wikigrapher-slim
+        </a>
+        <button
+          class="navbar-toggler"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+          data-bs-target="#navbarSupportedContent"
+          data-bs-toggle="collapse"
+          type="button">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="navbar-collapse collapse"
+          id="navbarSupportedContent">
+          <ul class="navbar-nav mb-lg-0 mb-2 me-auto">
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                aria-current="paths"
+                th:href="@{/paths}"
+                >paths</a
+              >
+            </li>
+          </ul>
+          <div class="d-flex p-2">
+            <button
+              class="btn btn-outline-dark bi bi-database-fill"
+              aria-controls="offcanvasWithBothOptions"
+              data-bs-target="#offcanvasWithBothOptions"
+              data-bs-toggle="offcanvas"
+              type="button">
+              dump
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </body>
+</html>

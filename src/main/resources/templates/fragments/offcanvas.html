@@ -1,0 +1,43 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div
+      class="offcanvas offcanvas-start"
+      id="offcanvasWithBothOptions"
+      aria-labelledby="offcanvasWithBothOptionsLabel"
+      data-bs-scroll="true"
+      th:fragment="offcanvas"
+      tabindex="-1">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">current wikipedia dump</h5>
+        <button
+          class="btn-close"
+          aria-label="Close"
+          data-bs-dismiss="offcanvas"
+          type="button"></button>
+      </div>
+      <div class="offcanvas-body">
+        <!-- prettier-ignore -->
+        <div class="code-editor" id="code-editor">
+{
+  "<span class='json-key'>lang</span>": "<span class='json-string' th:text="${dumpMeta?.lang}"></span>",
+  "<span class='json-key'>date</span>": "<span class='json-string' th:text="${dumpMeta?.date}"></span>",
+  "<span class='json-key'>url</span>": "<span class='json-string' th:text="${dumpMeta?.url}"></span>",
+  "<span class='json-key'>nodes</span>": {
+    "<span class='json-key'>pages</span>": <span class='json-number' th:text="${dumpMeta?.nodes?.pages}"></span>,
+    "<span class='json-key'>redirects</span>": <span class='json-number' th:text="${dumpMeta?.nodes?.redirects}"></span>,
+    "<span class='json-key'>categories</span>": <span class='json-number' th:text="${dumpMeta?.nodes?.categories}"></span>
+  },
+  "<span class='json-key'>relations</span>": {
+    "<span class='json-key'>link_to</span>": <span class='json-number' th:text="${dumpMeta?.relations?.linkTo}"></span>,
+    "<span class='json-key'>redirect_to</span>": <span class='json-number' th:text="${dumpMeta?.relations?.redirectTo}"></span>,
+    "<span class='json-key'>belong_to</span>": <span class='json-number' th:text="${dumpMeta?.relations?.belongTo}"></span>
+  }
+}
+    </div>
+      </div>
+    </div>
+  </body>
+</html>

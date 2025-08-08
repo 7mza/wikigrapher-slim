@@ -1,0 +1,23 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/head :: head}"></head>
+  <body class="min-vh-100 d-flex flex-column">
+    <div class="separator"></div>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div th:replace="~{fragments/offcanvas :: offcanvas}"></div>
+    <div class="container-fluid row">
+      <div class="col-md-5">
+        <div th:replace="~{fragments/paths_form :: paths_form}"></div>
+      </div>
+      <div class="col-md-7">
+        <div th:replace="~{fragments/graph :: graph}"></div>
+      </div>
+    </div>
+    <div th:replace="~{fragments/toast :: toast}"></div>
+    <div th:replace="~{fragments/modal :: modal}"></div>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script th:src="${assetManifest['paths.js']}"></script>
+  </body>
+</html>

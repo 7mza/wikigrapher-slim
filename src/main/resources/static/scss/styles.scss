@@ -1,0 +1,90 @@
+@import 'bootstrap/scss/bootstrap';
+
+$bootstrap-icons-font-dir: '~bootstrap-icons/font/fonts';
+@import '~bootstrap-icons/font/bootstrap-icons.scss';
+
+.vis-tooltip {
+  background-color: black;
+  color: white;
+  height: auto;
+  padding: 10px;
+  position: absolute;
+  text-align: left;
+  width: auto;
+}
+
+.code-editor {
+  background-color: #2e2e2e;
+  border-radius: 5px;
+  border: 1px solid #444;
+  color: white;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  height: auto;
+  line-height: 1.6;
+  overflow: auto;
+  padding: 10px;
+  white-space: pre-wrap;
+  width: auto;
+  word-wrap: break-word;
+}
+
+.json-key {
+  color: #d19a66;
+  font-weight: bold;
+}
+
+.json-string {
+  color: #98c379;
+}
+
+.json-number {
+  color: #61afef;
+}
+
+.json-boolean {
+  color: #e06c75;
+}
+
+.json-null {
+  color: #56b6c2;
+}
+
+.wrap {
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+body {
+  background-image:
+    linear-gradient(0deg, rgba(0, 0, 0, 0.05) 0px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0px, transparent 1px);
+  background-size: 10px 10px;
+  min-height: 100vh;
+  background-color: white;
+}
+
+.formz {
+  background-color: #f8f9fa;
+}
+
+#graph {
+  width: 100%;
+  height: 90vh;
+  min-height: 600px;
+}
+
+.modal-content {
+  width: 20rem;
+}
+
+.separator {
+  height: 3px;
+  background-color: #007bff;
+}
+
+.disabled-a {
+  pointer-events: none;
+  cursor: default;
+}

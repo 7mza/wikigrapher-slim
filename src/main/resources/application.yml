@@ -1,0 +1,94 @@
+clients:
+  wikipedia:
+    host: en.wikipedia.org
+    port:
+    proto: https
+init:
+  paths:
+    - source: Gandalf
+      target: Couscous
+    - source: Mordor
+      target: Roquefort
+    - source: Albus_Dumbledore
+      target: Poker
+    - source: Coca-Cola
+      target: Roquefort
+    - source: Morgoth
+      target: Ubuntu
+management:
+  endpoint:
+    env:
+      show-values: ALWAYS
+    health:
+      group:
+        readiness:
+          include: '*'
+      probes:
+        enabled: true
+      show-details: ALWAYS
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+server:
+  compression:
+    enabled: true
+  error:
+    include-message: always
+  forward-headers-strategy: native
+  http2:
+    enabled: true
+  port: 8080
+  shutdown: graceful
+  ssl:
+    enabled: false
+spring:
+  application:
+    name: wikigrapher-slim
+  config:
+    activate:
+      on-profile: default
+  data:
+    neo4j:
+      database: neo4j
+  docker:
+    compose:
+      enabled: true
+      file: compose.spring.yml
+  http:
+    codecs:
+      log-request-details: true
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  main:
+    banner-mode: 'off'
+  neo4j:
+    authentication:
+      password: ${NEO4J_PASSWORD}
+      username: ${NEO4J_USERNAME}
+    uri: bolt://localhost:7687
+  output:
+    ansi:
+      enabled: ALWAYS
+springdoc:
+  api-docs:
+    path: /api-docs
+  cache:
+    disabled: true
+  packagesToScan: com.wikigrapher
+  pathsToMatch: /**
+  swagger-ui:
+    disable-swagger-default-url: true
+    doc-expansion: none
+    operationsSorter: method
+    path: /swagger-ui
+    tagsSorter: alpha
+---
+server:
+  port: 80
+spring:
+  config:
+    activate:
+      on-profile: docker
+  neo4j:
+    uri: bolt://neo4j:7687

@@ -1,0 +1,19 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="head">
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      name="viewport" />
+    <title>
+      wikigrapher-slim - find shortest paths between wikipedia pages
+    </title>
+    <link
+      th:href="${assetManifest['shared.css']}"
+      rel="stylesheet" />
+    <script th:src="${assetManifest['vendor.js']}"></script>
+    <script th:src="${assetManifest['shared.js']}"></script>
+  </head>
+</html>
