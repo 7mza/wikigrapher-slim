@@ -61,7 +61,7 @@ class PathService
                         it.t2 -> Mono.just(TYPE.REDIRECT)
                         else -> {
                             logger.error("getSourceType, node {} not found", sourceTitle)
-                            Mono.error(IllegalArgumentException("sourceTitle not found"))
+                            Mono.empty()
                         }
                     }
                 }
@@ -79,7 +79,7 @@ class PathService
                             TYPE.PAGE -> pageRepository.shortestPathLength(sourceTitle, targetTitle)
                             TYPE.REDIRECT -> redirectRepository.shortestPathLength(sourceTitle, targetTitle)
                         }
-                    }
+                    }.switchIfEmpty(Mono.just(0))
             }
 
         override fun shortestPathByTitle(
@@ -100,7 +100,7 @@ class PathService
                                         targetTitle,
                                     ).map { it.toNode() }
                         }.flatMapMany { dfsFlatten(it, sourceTitle, targetTitle) }
-                    }
+                    }.switchIfEmpty(Flux.empty())
             }
 
         override fun getRandomShortestPath(): Flux<RelationDto> =
@@ -146,7 +146,7 @@ class PathService
                                 )
                                 Flux.empty()
                             }
-                    }
+                    }.switchIfEmpty(Flux.empty())
             }
 
         override fun allShortestPathsByTitle(
@@ -175,7 +175,7 @@ class PathService
                                 )
                                 Flux.empty()
                             }
-                    }
+                    }.switchIfEmpty(Flux.empty())
             }
 
         private fun dfsFlatten(

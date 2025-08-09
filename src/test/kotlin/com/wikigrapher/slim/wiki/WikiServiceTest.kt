@@ -84,7 +84,7 @@ class WikiServiceTest {
     }
 
     @Test
-    fun `getWikipediaPageImage onError shouldn't throw exception`() {
+    fun `getWikipediaPageImage onError should return empty and not throw exception`() {
         WireMock.stubFor(
             WireMock
                 .get(
