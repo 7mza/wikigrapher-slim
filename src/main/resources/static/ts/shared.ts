@@ -1,6 +1,6 @@
 import '../scss/styles.scss';
 
-import { Modal, Toast, Tooltip, Popover } from 'bootstrap';
+import { Modal, Popover, Toast, Tooltip } from 'bootstrap';
 import { Network, Options } from 'vis-network/peer';
 import { DataSet } from 'vis-data/peer';
 
@@ -571,6 +571,8 @@ export class NodeDto {
   outgoing?: NodeDto[];
   incoming?: NodeDto[];
   categories?: CategoryDto[];
+  isTopParent: boolean;
+  isBottomChild: boolean;
 
   constructor({
     id,
@@ -579,6 +581,8 @@ export class NodeDto {
     outgoing,
     incoming,
     categories,
+    isTopParent,
+    isBottomChild,
   }: {
     id: string;
     title: string;
@@ -586,6 +590,8 @@ export class NodeDto {
     outgoing?: NodeDto[];
     incoming?: NodeDto[];
     categories?: CategoryDto[];
+    isTopParent: boolean;
+    isBottomChild: boolean;
   }) {
     this.id = id;
     this.title = title;
@@ -593,6 +599,8 @@ export class NodeDto {
     this.outgoing = outgoing;
     this.incoming = incoming;
     this.categories = categories;
+    this.isTopParent = isTopParent;
+    this.isBottomChild = isBottomChild;
   }
 }
 
@@ -722,4 +730,21 @@ export function setupClearButton(formFieldIds: string[]): void {
     clearForm(formFieldIds);
     clearGraph(wrapper);
   });
+}
+
+export async function fetchNodes(url: string): Promise<NodeDto[] | null> {
+  try {
+    toggleSpinner({ show: true });
+    setButtonState({ id: 'graph-button', enabled: false });
+    setButtonState({ id: 'random-button', enabled: false });
+    setButtonState({ id: 'download-button', enabled: false });
+    setButtonState({ id: 'clear-button', enabled: false });
+    return await fetchData<[NodeDto]>(url);
+  } finally {
+    toggleSpinner({ show: false });
+    setButtonState({ id: 'graph-button' });
+    setButtonState({ id: 'random-button' });
+    setButtonState({ id: 'download-button' });
+    setButtonState({ id: 'clear-button' });
+  }
 }

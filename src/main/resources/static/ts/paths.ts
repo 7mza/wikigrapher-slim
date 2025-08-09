@@ -6,6 +6,7 @@ import {
   downloadJSON,
   Edge,
   fetchData,
+  fetchNodes,
   getCheckboxState,
   getInputValue,
   getNetworkOptions,
@@ -52,27 +53,18 @@ function findParentAndLastChild(data: RelationDto[]): {
   parentNode: NodeDto;
   lastChildNode: NodeDto;
 } {
-  const sources = new Set(data.map((item) => item.source.id));
-  const targets = new Set(data.map((item) => item.target.id));
-  let parentNode: NodeDto | null | undefined;
-  let lastChildNode: NodeDto | null | undefined;
-  for (const item of data) {
-    if (!targets.has(item.source.id) && !parentNode) {
-      parentNode = item.source;
-    }
-  }
-  for (const item of data) {
-    if (!sources.has(item.target.id)) {
-      lastChildNode = item.target;
-    }
-  }
-  if (!parentNode) {
+  const parentRelation = data.find((rel) => rel.source.isTopParent);
+  if (!parentRelation) {
     throw new Error('parentNode not found');
   }
-  if (!lastChildNode) {
+  const lastChildRelation = data.find((rel) => rel.target.isBottomChild);
+  if (!lastChildRelation) {
     throw new Error('lastChildNode not found');
   }
-  return { parentNode: parentNode, lastChildNode: lastChildNode };
+  return {
+    parentNode: parentRelation.source,
+    lastChildNode: lastChildRelation.target,
+  };
 }
 
 async function prepareNetworkData({
@@ -139,27 +131,11 @@ async function handleRandomButton(): Promise<void> {
   try {
     setInputValue({ id: 'skip-input', value: 0 });
     setInputValue({ id: 'limit-input', value: 1 });
-    const data = await fetchPath(`${BASE_URL}/api/core/path/random`);
-    if (data?.length) {
-      const { parentNode, lastChildNode } = findParentAndLastChild(data);
-      setInputValue({ id: 'source-input', value: parentNode.title });
-      setInputValue({ id: 'target-input', value: lastChildNode.title });
-      const { nodes: nodes, edges: edges } = await prepareNetworkData({
-        data: data,
-        parentNode: parentNode,
-        lastChildNode: lastChildNode,
-      });
-      const options = getNetworkOptions({
-        isHierarchical: getCheckboxState('hierarchical-checkbox'),
-        solver: getInputValue('solver-select'),
-        direction: getInputValue('direction-select'),
-      });
-      await renderNetwork({
-        wrapper: wrapper,
-        nodes: nodes,
-        edges: edges,
-        options: options,
-      });
+    const pages = await fetchNodes(`${BASE_URL}/api/core/page/random?n=2`);
+    if (pages && pages.length >= 2) {
+      setInputValue({ id: 'source-input', value: pages![0].title });
+      setInputValue({ id: 'target-input', value: pages![1].title });
+      await handleGraphButton();
     } else {
       await handleRandomButton(); // FIXME: danger
     }

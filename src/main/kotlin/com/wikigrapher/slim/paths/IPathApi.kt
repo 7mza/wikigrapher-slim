@@ -25,7 +25,7 @@ import reactor.core.publisher.Mono
 interface IPathApi {
     @GetMapping("/path/length")
     @Operation(
-        summary = "find minimal path length between two nodes",
+        summary = "find shortest path length between two nodes",
         description = "TODO",
     )
     @ApiResponses(
@@ -71,7 +71,7 @@ interface IPathApi {
 
     @GetMapping("/path")
     @Operation(
-        summary = "find minimal path between two nodes",
+        summary = "find shortest path between two nodes",
         description = "TODO",
     )
     @ApiResponses(
@@ -91,20 +91,68 @@ interface IPathApi {
 """
 [
   {
-    "source": { "id": "3", "title": "gandalf", "type": "PAGE" },
-    "target": { "id": "11", "title": "wizard", "type": "PAGE" }
+    "source": {
+      "id": "3",
+      "title": "gandalf",
+      "type": "PAGE",
+      "isSourceTopParent": true,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "11",
+      "title": "wizard",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "11", "title": "wizard", "type": "PAGE" },
-    "target": { "id": "15", "title": "wisdom", "type": "PAGE" }
+    "source": {
+      "id": "11",
+      "title": "wizard",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "15",
+      "title": "wisdom",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "15", "title": "wisdom", "type": "PAGE" },
-    "target": { "id": "27", "title": "the bright lord", "type": "REDIRECT" }
+    "source": {
+      "id": "15",
+      "title": "wisdom",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "27",
+      "title": "the bright lord",
+      "type": "REDIRECT",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "27", "title": "the bright lord", "type": "REDIRECT" },
-    "target": { "id": "9", "title": "celebrimbor", "type": "PAGE" }
+    "source": {
+      "id": "27",
+      "title": "the bright lord",
+      "type": "REDIRECT",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "9",
+      "title": "celebrimbor",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": true
+    }
   }
 ]
 """,
@@ -139,7 +187,7 @@ interface IPathApi {
 
     @GetMapping("/path/random")
     @Operation(
-        summary = "get random path between two random page nodes",
+        summary = "get shortest path between two random page nodes",
         description = "TODO",
     )
     @ApiResponses(
@@ -159,20 +207,68 @@ interface IPathApi {
 """
 [
   {
-    "source": { "id": "3", "title": "gandalf", "type": "PAGE" },
-    "target": { "id": "11", "title": "wizard", "type": "PAGE" }
+    "source": {
+      "id": "3",
+      "title": "gandalf",
+      "type": "PAGE",
+      "isSourceTopParent": true,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "11",
+      "title": "wizard",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "11", "title": "wizard", "type": "PAGE" },
-    "target": { "id": "15", "title": "wisdom", "type": "PAGE" }
+    "source": {
+      "id": "11",
+      "title": "wizard",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "15",
+      "title": "wisdom",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "15", "title": "wisdom", "type": "PAGE" },
-    "target": { "id": "27", "title": "the bright lord", "type": "REDIRECT" }
+    "source": {
+      "id": "15",
+      "title": "wisdom",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "27",
+      "title": "the bright lord",
+      "type": "REDIRECT",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "27", "title": "the bright lord", "type": "REDIRECT" },
-    "target": { "id": "9", "title": "celebrimbor", "type": "PAGE" }
+    "source": {
+      "id": "27",
+      "title": "the bright lord",
+      "type": "REDIRECT",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "9",
+      "title": "celebrimbor",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": true
+    }
   }
 ]
 """,
@@ -188,7 +284,7 @@ interface IPathApi {
 
     @GetMapping("/paths")
     @Operation(
-        summary = "find N paginated paths between two nodes",
+        summary = "find N paginated shortest paths between two nodes",
         description = "TODO",
     )
     @ApiResponses(
@@ -208,20 +304,68 @@ interface IPathApi {
 """
 [
   {
-    "source": { "id": "3", "title": "gandalf", "type": "PAGE" },
-    "target": { "id": "11", "title": "wizard", "type": "PAGE" }
+    "source": {
+      "id": "3",
+      "title": "gandalf",
+      "type": "PAGE",
+      "isSourceTopParent": true,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "11",
+      "title": "wizard",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "11", "title": "wizard", "type": "PAGE" },
-    "target": { "id": "15", "title": "wisdom", "type": "PAGE" }
+    "source": {
+      "id": "11",
+      "title": "wizard",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "15",
+      "title": "wisdom",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "15", "title": "wisdom", "type": "PAGE" },
-    "target": { "id": "27", "title": "the bright lord", "type": "REDIRECT" }
+    "source": {
+      "id": "15",
+      "title": "wisdom",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "27",
+      "title": "the bright lord",
+      "type": "REDIRECT",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "27", "title": "the bright lord", "type": "REDIRECT" },
-    "target": { "id": "9", "title": "celebrimbor", "type": "PAGE" }
+    "source": {
+      "id": "27",
+      "title": "the bright lord",
+      "type": "REDIRECT",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "9",
+      "title": "celebrimbor",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": true
+    }
   }
 ]
 """,
@@ -264,7 +408,7 @@ interface IPathApi {
 
     @GetMapping("/paths/all")
     @Operation(
-        summary = "find all paths between two nodes",
+        summary = "find all shortest paths between two nodes",
         description = "TODO",
     )
     @ApiResponses(
@@ -284,20 +428,68 @@ interface IPathApi {
 """
 [
   {
-    "source": { "id": "3", "title": "gandalf", "type": "PAGE" },
-    "target": { "id": "11", "title": "wizard", "type": "PAGE" }
+    "source": {
+      "id": "3",
+      "title": "gandalf",
+      "type": "PAGE",
+      "isSourceTopParent": true,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "11",
+      "title": "wizard",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "11", "title": "wizard", "type": "PAGE" },
-    "target": { "id": "15", "title": "wisdom", "type": "PAGE" }
+    "source": {
+      "id": "11",
+      "title": "wizard",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "15",
+      "title": "wisdom",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "15", "title": "wisdom", "type": "PAGE" },
-    "target": { "id": "27", "title": "the bright lord", "type": "REDIRECT" }
+    "source": {
+      "id": "15",
+      "title": "wisdom",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "27",
+      "title": "the bright lord",
+      "type": "REDIRECT",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    }
   },
   {
-    "source": { "id": "27", "title": "the bright lord", "type": "REDIRECT" },
-    "target": { "id": "9", "title": "celebrimbor", "type": "PAGE" }
+    "source": {
+      "id": "27",
+      "title": "the bright lord",
+      "type": "REDIRECT",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": false
+    },
+    "target": {
+      "id": "9",
+      "title": "celebrimbor",
+      "type": "PAGE",
+      "isSourceTopParent": false,
+      "isTargetBottomChild": true
+    }
   }
 ]
 """,

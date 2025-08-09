@@ -27,6 +27,8 @@ data class NodeSubDto(
     val id: String,
     var title: String,
     val type: TYPE,
+    val isTopParent: Boolean = false,
+    val isBottomChild: Boolean = false,
 ) {
     init {
         title = Commons.sanitizeOutput(title)

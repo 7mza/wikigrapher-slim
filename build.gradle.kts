@@ -158,7 +158,7 @@ node {
 }
 
 tasks.processResources {
-    finalizedBy("npm_run_build")
+    dependsOn("npm_run_build")
 }
 
 tasks.register("npm_run_build", NpmTask::class) {

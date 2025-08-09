@@ -115,7 +115,7 @@ class Neo4jConfigs
         fun cypherDslConfiguration(): org.neo4j.cypherdsl.core.renderer.Configuration =
             org.neo4j.cypherdsl.core.renderer.Configuration
                 .newConfig()
-                .withDialect(Dialect.NEO4J_5_23)
+                .withDialect(Dialect.NEO4J_5_26)
                 .build()
 
         @Bean(ReactiveNeo4jRepositoryConfigurationExtension.DEFAULT_TRANSACTION_MANAGER_BEAN_NAME)

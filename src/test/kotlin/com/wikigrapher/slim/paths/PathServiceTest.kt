@@ -77,9 +77,54 @@ class PathServiceTest {
     }
 
     @Test
-    fun shortestPathLength() {
+    fun `getSourceType for page`() {
+        StepVerifier
+            .create(service.getSourceType("wizard"))
+            .expectNext(TYPE.PAGE)
+            .expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun `getSourceType for redirect`() {
+        StepVerifier
+            .create(service.getSourceType("mithrandir"))
+            .expectNext(TYPE.REDIRECT)
+            .expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun `shortestPathLength between 2 pages`() {
         StepVerifier
             .create(service.shortestPathLength("wizard", "celebrimbor"))
+            .expectNext(3)
+            .expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun `shortestPathLength between 2 redirects`() {
+        StepVerifier
+            .create(service.shortestPathLength("mithrandir", "the bright lord"))
+            .expectNext(4)
+            .expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun `shortestPathLength between page and redirect`() {
+        StepVerifier
+            .create(service.shortestPathLength("good", "the bright lord"))
+            .expectNext(1)
+            .expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun `shortestPathLength between redirect and page`() {
+        StepVerifier
+            .create(service.shortestPathLength("mithrandir", "good"))
             .expectNext(3)
             .expectNextCount(0)
             .verifyComplete()
@@ -97,12 +142,12 @@ class PathServiceTest {
     }
 
     @Test
-    fun shortestPathByTitle() {
+    fun `shortestPathByTitle between 2 pages`() {
         StepVerifier
             .create(service.shortestPathByTitle("morgoth", "gandalf"))
             .expectNext(
                 RelationDto(
-                    NodeSubDto("10", "morgoth", TYPE.PAGE),
+                    NodeSubDto("10", "morgoth", TYPE.PAGE, isTopParent = true),
                     NodeSubDto("25", "stormcrow", TYPE.REDIRECT),
                 ),
                 RelationDto(
@@ -111,7 +156,32 @@ class PathServiceTest {
                 ),
                 RelationDto(
                     NodeSubDto("4", "mithrandir", TYPE.REDIRECT),
+                    NodeSubDto("3", "gandalf", TYPE.PAGE, isBottomChild = true),
+                ),
+            ).expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun `shortestPathByTitle between 2 redirects`() {
+        StepVerifier
+            .create(service.shortestPathByTitle("mithrandir", "the bright lord"))
+            .expectNext(
+                RelationDto(
+                    NodeSubDto("4", "mithrandir", TYPE.REDIRECT, isTopParent = true),
                     NodeSubDto("3", "gandalf", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("3", "gandalf", TYPE.PAGE),
+                    NodeSubDto("11", "wizard", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("11", "wizard", TYPE.PAGE),
+                    NodeSubDto("15", "wisdom", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("15", "wisdom", TYPE.PAGE),
+                    NodeSubDto("27", "the bright lord", TYPE.REDIRECT, isBottomChild = true),
                 ),
             ).expectNextCount(0)
             .verifyComplete()
@@ -139,16 +209,16 @@ class PathServiceTest {
 
     @Test
     fun getRandomShortestPath() {
-        // FIXME
+        // FIXME: data too small
     }
 
     @Test
-    fun shortestPathsByTitle() {
+    fun `shortestPathsByTitle between 2 pages`() {
         StepVerifier
-            .create(service.shortestPathsByTitle("wizard", "celebrimbor", 0, 2))
+            .create(service.shortestPathsByTitle("wizard", "celebrimbor", 0, 100))
             .expectNext(
                 RelationDto(
-                    NodeSubDto("11", "wizard", TYPE.PAGE),
+                    NodeSubDto("11", "wizard", TYPE.PAGE, isTopParent = true),
                     NodeSubDto("12", "good", TYPE.PAGE),
                 ),
                 RelationDto(
@@ -157,7 +227,40 @@ class PathServiceTest {
                 ),
                 RelationDto(
                     NodeSubDto("27", "the bright lord", TYPE.REDIRECT),
-                    NodeSubDto("9", "celebrimbor", TYPE.PAGE),
+                    NodeSubDto("9", "celebrimbor", TYPE.PAGE, isBottomChild = true),
+                ),
+                RelationDto(
+                    NodeSubDto("11", "wizard", TYPE.PAGE, isTopParent = true),
+                    NodeSubDto("15", "wisdom", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("15", "wisdom", TYPE.PAGE),
+                    NodeSubDto("27", "the bright lord", TYPE.REDIRECT),
+                ),
+            ).expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun `shortestPathsByTitle between 2 redirects`() {
+        StepVerifier
+            .create(service.shortestPathsByTitle("mithrandir", "the bright lord", 0, 100))
+            .expectNext(
+                RelationDto(
+                    NodeSubDto("4", "mithrandir", TYPE.REDIRECT, isTopParent = true),
+                    NodeSubDto("3", "gandalf", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("3", "gandalf", TYPE.PAGE),
+                    NodeSubDto("11", "wizard", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("11", "wizard", TYPE.PAGE),
+                    NodeSubDto("12", "good", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("12", "good", TYPE.PAGE),
+                    NodeSubDto("27", "the bright lord", TYPE.REDIRECT, isBottomChild = true),
                 ),
                 RelationDto(
                     NodeSubDto("11", "wizard", TYPE.PAGE),
@@ -165,7 +268,28 @@ class PathServiceTest {
                 ),
                 RelationDto(
                     NodeSubDto("15", "wisdom", TYPE.PAGE),
+                    NodeSubDto("27", "the bright lord", TYPE.REDIRECT, isBottomChild = true),
+                ),
+            ).expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun `shortestPathsByTitle should respect skip and limit`() {
+        StepVerifier
+            .create(service.shortestPathsByTitle("wizard", "celebrimbor", 1, 1))
+            .expectNext(
+                RelationDto(
+                    NodeSubDto("11", "wizard", TYPE.PAGE, isTopParent = true),
+                    NodeSubDto("15", "wisdom", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("15", "wisdom", TYPE.PAGE),
                     NodeSubDto("27", "the bright lord", TYPE.REDIRECT),
+                ),
+                RelationDto(
+                    NodeSubDto("27", "the bright lord", TYPE.REDIRECT),
+                    NodeSubDto("9", "celebrimbor", TYPE.PAGE, isBottomChild = true),
                 ),
             ).expectNextCount(0)
             .verifyComplete()
@@ -192,12 +316,12 @@ class PathServiceTest {
     }
 
     @Test
-    fun allShortestPathsByTitle() {
+    fun `allShortestPathsByTitle between 2 pages`() {
         StepVerifier
             .create(service.allShortestPathsByTitle("wizard", "celebrimbor"))
             .expectNext(
                 RelationDto(
-                    NodeSubDto("11", "wizard", TYPE.PAGE),
+                    NodeSubDto("11", "wizard", TYPE.PAGE, isTopParent = true),
                     NodeSubDto("12", "good", TYPE.PAGE),
                 ),
                 RelationDto(
@@ -206,7 +330,40 @@ class PathServiceTest {
                 ),
                 RelationDto(
                     NodeSubDto("27", "the bright lord", TYPE.REDIRECT),
-                    NodeSubDto("9", "celebrimbor", TYPE.PAGE),
+                    NodeSubDto("9", "celebrimbor", TYPE.PAGE, isBottomChild = true),
+                ),
+                RelationDto(
+                    NodeSubDto("11", "wizard", TYPE.PAGE, isTopParent = true),
+                    NodeSubDto("15", "wisdom", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("15", "wisdom", TYPE.PAGE),
+                    NodeSubDto("27", "the bright lord", TYPE.REDIRECT),
+                ),
+            ).expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun `allShortestPathsByTitle between 2 redirects`() {
+        StepVerifier
+            .create(service.allShortestPathsByTitle("mithrandir", "the bright lord"))
+            .expectNext(
+                RelationDto(
+                    NodeSubDto("4", "mithrandir", TYPE.REDIRECT, isTopParent = true),
+                    NodeSubDto("3", "gandalf", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("3", "gandalf", TYPE.PAGE),
+                    NodeSubDto("11", "wizard", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("11", "wizard", TYPE.PAGE),
+                    NodeSubDto("12", "good", TYPE.PAGE),
+                ),
+                RelationDto(
+                    NodeSubDto("12", "good", TYPE.PAGE),
+                    NodeSubDto("27", "the bright lord", TYPE.REDIRECT, isBottomChild = true),
                 ),
                 RelationDto(
                     NodeSubDto("11", "wizard", TYPE.PAGE),
@@ -214,7 +371,7 @@ class PathServiceTest {
                 ),
                 RelationDto(
                     NodeSubDto("15", "wisdom", TYPE.PAGE),
-                    NodeSubDto("27", "the bright lord", TYPE.REDIRECT),
+                    NodeSubDto("27", "the bright lord", TYPE.REDIRECT, isBottomChild = true),
                 ),
             ).expectNextCount(0)
             .verifyComplete()

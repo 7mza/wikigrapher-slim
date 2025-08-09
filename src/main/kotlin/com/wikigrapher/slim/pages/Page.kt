@@ -69,5 +69,8 @@ data class TmpNode(
     val type: TYPE,
     val outgoing: Set<TmpNode>? = emptySet(),
 ) {
-    fun toSubDto() = NodeSubDto(id, title, type)
+    fun toSubDto(
+        isTopParent: Boolean = false,
+        isBottomChild: Boolean = false,
+    ) = NodeSubDto(id, title, type, isTopParent, isBottomChild)
 }

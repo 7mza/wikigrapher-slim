@@ -1,16 +1,22 @@
 package com.wikigrapher.slim.paths
 
 import com.wikigrapher.slim.RelationDto
+import com.wikigrapher.slim.TYPE
 import com.wikigrapher.slim.pages.IPageRepository
 import com.wikigrapher.slim.pages.IPageService
 import com.wikigrapher.slim.pages.TmpNode
+import com.wikigrapher.slim.redirects.IRedirectRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.util.function.component1
+import reactor.kotlin.core.util.function.component2
 
 interface IPathService {
+    fun getSourceType(sourceTitle: String): Mono<TYPE>
+
     fun shortestPathLength(
         sourceTitle: String,
         targetTitle: String,
@@ -42,8 +48,25 @@ class PathService
     constructor(
         private val pageService: IPageService,
         private val pageRepository: IPageRepository,
+        private val redirectRepository: IRedirectRepository,
     ) : IPathService {
         private val logger = LoggerFactory.getLogger(this::class.java)
+
+        override fun getSourceType(sourceTitle: String): Mono<TYPE> =
+            Mono
+                .zip(
+                    pageRepository.existsByTitle(sourceTitle),
+                    redirectRepository.existsByTitle(sourceTitle),
+                ).flatMap { (t1, t2) ->
+                    when {
+                        t1 -> Mono.just(TYPE.PAGE)
+                        t2 -> Mono.just(TYPE.REDIRECT)
+                        else -> {
+                            logger.error("getSourceType, node {} not found", sourceTitle)
+                            Mono.error(IllegalArgumentException("sourceTitle not found"))
+                        }
+                    }
+                }
 
         override fun shortestPathLength(
             sourceTitle: String,
@@ -52,7 +75,13 @@ class PathService
             if (sourceTitle.equals(targetTitle, true)) {
                 Mono.just(0)
             } else {
-                pageRepository.shortestPathLength(sourceTitle, targetTitle)
+                getSourceType(sourceTitle)
+                    .flatMap {
+                        when (it) {
+                            TYPE.PAGE -> pageRepository.shortestPathLength(sourceTitle, targetTitle)
+                            TYPE.REDIRECT -> redirectRepository.shortestPathLength(sourceTitle, targetTitle)
+                        }
+                    }
             }
 
         override fun shortestPathByTitle(
@@ -62,10 +91,18 @@ class PathService
             if (sourceTitle.equals(targetTitle, true)) {
                 Flux.empty()
             } else {
-                pageRepository
-                    .shortestPath(sourceTitle, targetTitle)
-                    .map { it.toNode() }
-                    .flatMapMany(::dfsFlatten)
+                getSourceType(sourceTitle)
+                    .flatMapMany { type ->
+                        when (type) {
+                            TYPE.PAGE -> pageRepository.shortestPath(sourceTitle, targetTitle).map { it.toNode() }
+                            TYPE.REDIRECT ->
+                                redirectRepository
+                                    .shortestPath(
+                                        sourceTitle,
+                                        targetTitle,
+                                    ).map { it.toNode() }
+                        }.flatMapMany { dfsFlatten(it, sourceTitle, targetTitle) }
+                    }
             }
 
         override fun getRandomShortestPath(): Flux<RelationDto> =
@@ -82,21 +119,35 @@ class PathService
             if (sourceTitle.equals(targetTitle, true)) {
                 Flux.empty()
             } else {
-                pageRepository
-                    .shortestPaths(
-                        sourceTitle,
-                        targetTitle,
-                        skip,
-                        limit,
-                    ).map { it.toNode() }
-                    .flatMapMany(::dfsFlatten)
-                    .onErrorResume(NoSuchElementException::class.java) {
-                        logger.error(
-                            "shortestPathsByTitle, no paths found between '{}' and '{}'",
-                            sourceTitle,
-                            targetTitle,
-                        )
-                        Flux.empty()
+                getSourceType(sourceTitle)
+                    .flatMapMany { type ->
+                        when (type) {
+                            TYPE.PAGE ->
+                                pageRepository
+                                    .shortestPaths(
+                                        sourceTitle,
+                                        targetTitle,
+                                        skip,
+                                        limit,
+                                    ).map { it.toNode() }
+
+                            TYPE.REDIRECT ->
+                                redirectRepository
+                                    .shortestPaths(
+                                        sourceTitle,
+                                        targetTitle,
+                                        skip,
+                                        limit,
+                                    ).map { it.toNode() }
+                        }.flatMapMany { dfsFlatten(it, sourceTitle, targetTitle) }
+                            .onErrorResume(NoSuchElementException::class.java) {
+                                logger.error(
+                                    "shortestPathsByTitle, no paths found between '{}' and '{}'",
+                                    sourceTitle,
+                                    targetTitle,
+                                )
+                                Flux.empty()
+                            }
                     }
             }
 
@@ -107,23 +158,33 @@ class PathService
             if (sourceTitle.equals(targetTitle, true)) {
                 Flux.empty()
             } else {
-                pageRepository
-                    .shortestPaths(
-                        sourceTitle,
-                        targetTitle,
-                    ).map { it.toNode() }
-                    .flatMapMany(::dfsFlatten)
-                    .onErrorResume(NoSuchElementException::class.java) {
-                        logger.error(
-                            "allShortestPathsByTitle, no paths found between '{}' and '{}'",
-                            sourceTitle,
-                            targetTitle,
-                        )
-                        Flux.empty()
+                getSourceType(sourceTitle)
+                    .flatMapMany { type ->
+                        when (type) {
+                            TYPE.PAGE -> pageRepository.shortestPaths(sourceTitle, targetTitle).map { it.toNode() }
+                            TYPE.REDIRECT ->
+                                redirectRepository
+                                    .shortestPaths(
+                                        sourceTitle,
+                                        targetTitle,
+                                    ).map { it.toNode() }
+                        }.flatMapMany { dfsFlatten(it, sourceTitle, targetTitle) }
+                            .onErrorResume(NoSuchElementException::class.java) {
+                                logger.error(
+                                    "allShortestPathsByTitle, no paths found between '{}' and '{}'",
+                                    sourceTitle,
+                                    targetTitle,
+                                )
+                                Flux.empty()
+                            }
                     }
             }
 
-        private fun dfsFlatten(root: TmpNode): Flux<RelationDto> =
+        private fun dfsFlatten(
+            root: TmpNode,
+            sourceTitle: String,
+            targetTitle: String,
+        ): Flux<RelationDto> =
             Flux
                 .create<RelationDto> { emitter ->
                     fun dfs(
@@ -131,7 +192,14 @@ class PathService
                         parent: TmpNode?,
                     ) {
                         parent?.let {
-                            emitter.next(RelationDto(it.toSubDto(), node.toSubDto()))
+                            val source = it.toSubDto(it.title.equals(sourceTitle, true), false)
+                            val target = node.toSubDto(false, node.title.equals(targetTitle, true))
+                            emitter.next(
+                                RelationDto(
+                                    source = source,
+                                    target = target,
+                                ),
+                            )
                         }
                         node.outgoing?.forEach {
                             dfs(it, node)
