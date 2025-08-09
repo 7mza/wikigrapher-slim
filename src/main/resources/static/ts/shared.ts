@@ -81,6 +81,84 @@ const network: Network | null = null;
 
 export const wrapper: NetworkWrapper = new NetworkWrapper(network);
 
+export interface Node {
+  id: string;
+  label: string;
+  title: string;
+  color: string;
+  type: NodeDtoType;
+}
+
+export interface Edge {
+  id: string;
+  from: string;
+  to: string;
+  arrows: string;
+  label: string;
+}
+
+export class NodeDto {
+  id: string;
+  title: string;
+  type: NodeDtoType;
+  outgoing?: NodeDto[];
+  incoming?: NodeDto[];
+  categories?: CategoryDto[];
+  isTopParent: boolean;
+  isBottomChild: boolean;
+
+  constructor({
+    id,
+    title,
+    type,
+    outgoing,
+    incoming,
+    categories,
+    isTopParent,
+    isBottomChild,
+  }: {
+    id: string;
+    title: string;
+    type: NodeDtoType;
+    outgoing?: NodeDto[];
+    incoming?: NodeDto[];
+    categories?: CategoryDto[];
+    isTopParent: boolean;
+    isBottomChild: boolean;
+  }) {
+    this.id = id;
+    this.title = title;
+    this.type = type;
+    this.outgoing = outgoing;
+    this.incoming = incoming;
+    this.categories = categories;
+    this.isTopParent = isTopParent;
+    this.isBottomChild = isBottomChild;
+  }
+}
+
+export enum NodeDtoType {
+  PAGE = 'PAGE',
+  REDIRECT = 'REDIRECT',
+}
+
+export interface RelationDto {
+  source: NodeDto;
+  target: NodeDto;
+}
+
+export interface ThumbnailDto {
+  source?: string;
+  width?: number;
+  height?: number;
+}
+
+export interface CategoryDto {
+  id: string;
+  title: string;
+  contains?: NodeDto[];
+}
+
 export async function fetchData<T>(url: string): Promise<T | null> {
   try {
     const response = await fetch(url);
@@ -118,22 +196,22 @@ export async function fetchData<T>(url: string): Promise<T | null> {
   }
 }
 
-export async function fetchThumbnail(
-  url: string
-): Promise<ThumbnailDto | null> {
+export async function fetchWithUI<T>(url: string): Promise<T | null> {
   try {
     toggleSpinner({ show: true });
     setButtonState({ id: 'graph-button', enabled: false });
     setButtonState({ id: 'random-button', enabled: false });
+    setButtonState({ id: 'download-button', enabled: false });
     setButtonState({ id: 'clear-button', enabled: false });
-    return await fetchData<ThumbnailDto>(url);
+    return await fetchData<T>(url);
   } catch (error) {
     console.error(error);
-    return {};
+    return null;
   } finally {
     toggleSpinner({ show: false });
     setButtonState({ id: 'graph-button' });
     setButtonState({ id: 'random-button' });
+    setButtonState({ id: 'download-button' });
     setButtonState({ id: 'clear-button' });
   }
 }
@@ -177,7 +255,7 @@ export async function renderNetwork({
       }
       let data: ThumbnailDto | null | undefined;
       if (node.type === NodeDtoType.PAGE) {
-        data = await fetchThumbnail(
+        data = await fetchWithUI(
           `${BASE_URL}/api/wiki/image?title=${encodeURIComponent(node.label)}&piThumbSize=200`
         );
       }
@@ -548,84 +626,6 @@ export function getNetworkOptions({
   };
 }
 
-export interface Node {
-  id: string;
-  label: string;
-  title: string;
-  color: string;
-  type: NodeDtoType;
-}
-
-export interface Edge {
-  id: string;
-  from: string;
-  to: string;
-  arrows: string;
-  label: string;
-}
-
-export class NodeDto {
-  id: string;
-  title: string;
-  type: NodeDtoType;
-  outgoing?: NodeDto[];
-  incoming?: NodeDto[];
-  categories?: CategoryDto[];
-  isTopParent: boolean;
-  isBottomChild: boolean;
-
-  constructor({
-    id,
-    title,
-    type,
-    outgoing,
-    incoming,
-    categories,
-    isTopParent,
-    isBottomChild,
-  }: {
-    id: string;
-    title: string;
-    type: NodeDtoType;
-    outgoing?: NodeDto[];
-    incoming?: NodeDto[];
-    categories?: CategoryDto[];
-    isTopParent: boolean;
-    isBottomChild: boolean;
-  }) {
-    this.id = id;
-    this.title = title;
-    this.type = type;
-    this.outgoing = outgoing;
-    this.incoming = incoming;
-    this.categories = categories;
-    this.isTopParent = isTopParent;
-    this.isBottomChild = isBottomChild;
-  }
-}
-
-export enum NodeDtoType {
-  PAGE = 'PAGE',
-  REDIRECT = 'REDIRECT',
-}
-
-export interface RelationDto {
-  source: NodeDto;
-  target: NodeDto;
-}
-
-export interface ThumbnailDto {
-  source?: string;
-  width?: number;
-  height?: number;
-}
-
-export interface CategoryDto {
-  id: string;
-  title: string;
-  contains?: NodeDto[];
-}
-
 export function downloadJSON(obj: object, filename: string): void {
   const json = JSON.stringify(obj, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
@@ -730,21 +730,4 @@ export function setupClearButton(formFieldIds: string[]): void {
     clearForm(formFieldIds);
     clearGraph(wrapper);
   });
-}
-
-export async function fetchNodes(url: string): Promise<NodeDto[] | null> {
-  try {
-    toggleSpinner({ show: true });
-    setButtonState({ id: 'graph-button', enabled: false });
-    setButtonState({ id: 'random-button', enabled: false });
-    setButtonState({ id: 'download-button', enabled: false });
-    setButtonState({ id: 'clear-button', enabled: false });
-    return await fetchData<[NodeDto]>(url);
-  } finally {
-    toggleSpinner({ show: false });
-    setButtonState({ id: 'graph-button' });
-    setButtonState({ id: 'random-button' });
-    setButtonState({ id: 'download-button' });
-    setButtonState({ id: 'clear-button' });
-  }
 }

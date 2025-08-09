@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import reactor.kotlin.core.util.function.component1
-import reactor.kotlin.core.util.function.component2
 
 interface IPathService {
     fun getSourceType(sourceTitle: String): Mono<TYPE>
@@ -57,10 +55,10 @@ class PathService
                 .zip(
                     pageRepository.existsByTitle(sourceTitle),
                     redirectRepository.existsByTitle(sourceTitle),
-                ).flatMap { (t1, t2) ->
+                ).flatMap {
                     when {
-                        t1 -> Mono.just(TYPE.PAGE)
-                        t2 -> Mono.just(TYPE.REDIRECT)
+                        it.t1 -> Mono.just(TYPE.PAGE)
+                        it.t2 -> Mono.just(TYPE.REDIRECT)
                         else -> {
                             logger.error("getSourceType, node {} not found", sourceTitle)
                             Mono.error(IllegalArgumentException("sourceTitle not found"))

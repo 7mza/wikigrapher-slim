@@ -5,8 +5,7 @@ import {
   DataSet,
   downloadJSON,
   Edge,
-  fetchData,
-  fetchNodes,
+  fetchWithUI,
   getCheckboxState,
   getInputValue,
   getNetworkOptions,
@@ -20,7 +19,6 @@ import {
   renderNetwork,
   reverseInputs,
   safeDecodeURIComponent,
-  setButtonState,
   setInputValue,
   setupClearButton,
   setupDownloadButton,
@@ -28,26 +26,8 @@ import {
   setupNumericInput,
   showToast,
   toggleSelect,
-  toggleSpinner,
   wrapper,
 } from './shared';
-
-async function fetchPath(url: string): Promise<RelationDto[] | null> {
-  try {
-    toggleSpinner({ show: true });
-    setButtonState({ id: 'graph-button', enabled: false });
-    setButtonState({ id: 'random-button', enabled: false });
-    setButtonState({ id: 'download-button', enabled: false });
-    setButtonState({ id: 'clear-button', enabled: false });
-    return await fetchData<RelationDto[]>(url);
-  } finally {
-    toggleSpinner({ show: false });
-    setButtonState({ id: 'graph-button' });
-    setButtonState({ id: 'random-button' });
-    setButtonState({ id: 'download-button' });
-    setButtonState({ id: 'clear-button' });
-  }
-}
 
 function findParentAndLastChild(data: RelationDto[]): {
   parentNode: NodeDto;
@@ -131,7 +111,9 @@ async function handleRandomButton(): Promise<void> {
   try {
     setInputValue({ id: 'skip-input', value: 0 });
     setInputValue({ id: 'limit-input', value: 1 });
-    const pages = await fetchNodes(`${BASE_URL}/api/core/page/random?n=2`);
+    const pages: NodeDto[] | null = await fetchWithUI(
+      `${BASE_URL}/api/core/page/random?n=2`
+    );
     if (pages && pages.length >= 2) {
       setInputValue({ id: 'source-input', value: pages![0].title });
       setInputValue({ id: 'target-input', value: pages![1].title });
@@ -154,7 +136,7 @@ async function handleGraphButton(): Promise<void> {
       });
       return;
     }
-    const data = await fetchPath(
+    const data: RelationDto[] | null = await fetchWithUI(
       `${BASE_URL}/api/core/paths?sourceTitle=${encodeURIComponent(source)}&targetTitle=${encodeURIComponent(target)}&skip=${skip}&limit=${limit}`
     );
     if (data?.length) {
@@ -208,7 +190,7 @@ async function handleDwnButton(): Promise<void> {
       });
       return;
     }
-    const data = await fetchPath(
+    const data: RelationDto[] | null = await fetchWithUI(
       `${BASE_URL}/api/core/paths/all?sourceTitle=${encodeURIComponent(source)}&targetTitle=${encodeURIComponent(target)}`
     );
     if (data?.length) {
