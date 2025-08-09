@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
-@Tag(name = "path", description = "path operations")
+@Tag(name = "path", description = "path operations between page/redirect nodes")
 @RequestMapping(value = ["/api/core"], produces = [MediaType.APPLICATION_JSON_VALUE])
 interface IPathApi {
     @GetMapping("/path/length")
@@ -50,7 +50,7 @@ interface IPathApi {
     )
     fun shortestPathLength(
         @Schema(
-            description = "title of source page",
+            description = "title of source node",
             example = "Gandalf",
             required = true,
         )
@@ -59,7 +59,7 @@ interface IPathApi {
         @NotEmpty(message = "sourceTitle must not be empty")
         sourceTitle: String,
         @Schema(
-            description = "title of target page",
+            description = "title of target node",
             example = "Ubuntu",
             required = true,
         )
@@ -166,7 +166,7 @@ interface IPathApi {
     )
     fun shortestPathByTitle(
         @Schema(
-            description = "title of source page",
+            description = "title of source node",
             example = "Gandalf",
             required = true,
         )
@@ -175,7 +175,7 @@ interface IPathApi {
         @NotEmpty(message = "sourceTitle must not be empty")
         sourceTitle: String,
         @Schema(
-            description = "title of target page",
+            description = "title of target node",
             example = "Ubuntu",
             required = true,
         )
@@ -379,7 +379,7 @@ interface IPathApi {
     )
     fun shortestPathsByTitle(
         @Schema(
-            description = "title of source page",
+            description = "title of source node",
             example = "Gandalf",
             required = true,
         )
@@ -388,7 +388,7 @@ interface IPathApi {
         @NotEmpty(message = "sourceTitle must not be empty")
         sourceTitle: String,
         @Schema(
-            description = "title of target page",
+            description = "title of target node",
             example = "Ubuntu",
             required = true,
         )
@@ -503,7 +503,7 @@ interface IPathApi {
     )
     fun allShortestPathsByTitle(
         @Schema(
-            description = "title of source page",
+            description = "title of source node",
             example = "Gandalf",
             required = true,
         )
@@ -512,7 +512,7 @@ interface IPathApi {
         @NotEmpty(message = "sourceTitle must not be empty")
         sourceTitle: String,
         @Schema(
-            description = "title of target page",
+            description = "title of target node",
             example = "Ubuntu",
             required = true,
         )

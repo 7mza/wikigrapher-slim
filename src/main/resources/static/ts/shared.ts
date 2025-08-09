@@ -204,9 +204,6 @@ export async function fetchWithUI<T>(url: string): Promise<T | null> {
     setButtonState({ id: 'download-button', enabled: false });
     setButtonState({ id: 'clear-button', enabled: false });
     return await fetchData<T>(url);
-  } catch (error) {
-    console.error(error);
-    return null;
   } finally {
     toggleSpinner({ show: false });
     setButtonState({ id: 'graph-button' });
