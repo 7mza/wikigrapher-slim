@@ -40,6 +40,7 @@ enum class TYPE {
     REDIRECT,
 }
 
+// simple flat DTO to avoid any calculation in browser/js
 data class RelationDto(
     val source: NodeSubDto,
     val target: NodeSubDto,

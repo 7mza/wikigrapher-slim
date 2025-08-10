@@ -7,6 +7,11 @@ init:
   paths:
     - source: Gandalf
       target: Albus_Dumbledore
+logging:
+  include-application-name: false
+  level:
+    com.wikigrapher: ERROR
+    root: ERROR
 server:
   port: 0
 spring:
@@ -25,11 +30,5 @@ spring:
   config:
     activate:
       on-profile: neo4j
-  data:
-    neo4j:
-      database: neo4j
   neo4j:
-    authentication:
-      password: password
-      username: neo4j
-    uri: bolt://localhost:7687
+    uri:

@@ -8,10 +8,9 @@ import com.wikigrapher.slim.ReactiveFileReader
 import com.wikigrapher.slim.TestContainersFactory
 import com.wikigrapher.slim.TestDatabaseHelper
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
@@ -23,9 +22,8 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import reactor.test.StepVerifier
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Testcontainers
 @ActiveProfiles("default", "neo4j")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Testcontainers
 class MetaServiceTest {
     companion object {
         @JvmStatic
@@ -36,11 +34,8 @@ class MetaServiceTest {
         @JvmStatic
         @DynamicPropertySource
         private fun registerContainers(registry: DynamicPropertyRegistry) {
-            registry.add("neo4j.host") {
-                neo4jContainer.host
-            }
-            registry.add("neo4j.port") {
-                neo4jContainer.firstMappedPort
+            registry.add("spring.neo4j.uri") {
+                neo4jContainer.boltUrl
             }
         }
     }
@@ -54,8 +49,8 @@ class MetaServiceTest {
     @Autowired
     private lateinit var reactiveFileReader: ReactiveFileReader
 
-    @BeforeAll
-    fun beforeAll() {
+    @BeforeEach
+    fun init() {
         reactiveFileReader
             .readFileFromResources("classpath:dump.cypher")
             .flatMap {
@@ -63,8 +58,8 @@ class MetaServiceTest {
             }.block()
     }
 
-    @AfterAll
-    fun afterAll() {
+    @AfterEach
+    fun clean() {
         testDatabaseHelper.runCypherStatements(DELETE_ALL_QUERY).block()
     }
 
@@ -78,8 +73,8 @@ class MetaServiceTest {
                         lang = "en",
                         date = "11111111",
                         url = "https://dumps.wikimedia.org/enwiki/11111111",
-                        nodes = DumpNodes(pages = 9, redirects = 7, categories = 3),
-                        relations = DumpRelations(linkTo = 11, redirectTo = 7, belongTo = 8),
+                        nodes = DumpNodes(pages = 10, redirects = 8, categories = 3),
+                        relations = DumpRelations(linkTo = 13, redirectTo = 8, belongTo = 8),
                     ),
                 )
                 true

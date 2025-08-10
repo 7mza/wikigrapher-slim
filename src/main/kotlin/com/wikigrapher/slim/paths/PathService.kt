@@ -125,8 +125,8 @@ class PathService
                                     .shortestPaths(
                                         sourceTitle,
                                         targetTitle,
-                                        skip,
-                                        limit,
+                                        skip.takeIf { it >= 0 } ?: 0,
+                                        limit.takeIf { it >= 0 } ?: 0,
                                     ).map { it.toNode() }
 
                             TYPE.REDIRECT ->
@@ -134,8 +134,8 @@ class PathService
                                     .shortestPaths(
                                         sourceTitle,
                                         targetTitle,
-                                        skip,
-                                        limit,
+                                        skip.takeIf { it >= 0 } ?: 0,
+                                        limit.takeIf { it >= 0 } ?: 0,
                                     ).map { it.toNode() }
                         }.flatMapMany { dfsFlatten(it, sourceTitle, targetTitle) }
                             .onErrorResume(NoSuchElementException::class.java) {

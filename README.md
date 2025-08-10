@@ -56,6 +56,10 @@ if gradle-node-plugin is giving errors
 spring is configured with compose support, run with ide or
 
 ```shell
+./gradlew buildLocalDockerImage
+```
+
+```shell
 docker compose up --build
 ```
 

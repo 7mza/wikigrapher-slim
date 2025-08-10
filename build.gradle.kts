@@ -5,19 +5,18 @@ import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import org.owasp.dependencycheck.reporting.ReportGenerator.Format.HTML
 
 plugins {
+    kotlin("jvm") version "2.2.0"
+    kotlin("plugin.spring") version "2.2.0"
+    id("org.springframework.boot") version "3.5.4"
+    id("io.spring.dependency-management") version "1.1.7"
+
     id("com.autonomousapps.dependency-analysis") version "2.19.0"
     id("com.bmuschko.docker-remote-api") version "9.4.0"
     id("com.github.ben-manes.versions") version "0.52.0"
     id("com.github.node-gradle.node") version "7.1.0"
-    id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
     id("org.owasp.dependencycheck") version "12.1.3"
-    id("org.springframework.boot") version "3.5.4"
     jacoco
-    kotlin("jvm") version "2.2.0"
-    kotlin("plugin.jpa") version "2.2.0"
-    kotlin("plugin.noarg") version "2.2.0"
-    kotlin("plugin.spring") version "2.2.0"
 }
 
 group = "com.wikigrapher"
@@ -200,9 +199,9 @@ tasks.register<DockerBuildImage>("buildLocalDockerImage") {
     outputs.cacheIf { true }
 }
 
-tasks.check {
-    finalizedBy("buildLocalDockerImage")
-}
+// tasks.check {
+//    finalizedBy("buildLocalDockerImage")
+// }
 
 dependencyCheck {
     // https://nvd.nist.gov/developers/request-an-api-key

@@ -15,6 +15,11 @@ init:
       target: Roquefort
     - source: Morgoth
       target: Ubuntu
+logging:
+  include-application-name: false
+  level:
+    com.wikigrapher: DEBUG
+    root: INFO
 management:
   endpoint:
     env:
@@ -48,9 +53,6 @@ spring:
   config:
     activate:
       on-profile: default
-  data:
-    neo4j:
-      database: neo4j
   docker:
     compose:
       enabled: true
