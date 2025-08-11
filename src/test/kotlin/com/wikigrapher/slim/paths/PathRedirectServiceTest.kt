@@ -101,12 +101,12 @@ class PathRedirectServiceTest {
                     assertThat(first.source.title).isEqualTo("the dark lord")
                     assertThat(first.source.type).isEqualTo(TYPE.REDIRECT)
                     assertThat(first.source.isTopParent).isTrue
-                    assertThat(first.source.isBottomChild).isFalse
+                    assertThat(first.source.isBottomChild).isNull()
 
                     val last = it.last()
                     assertThat(last.target.title).isEqualTo("mithrandir")
                     assertThat(last.target.type).isEqualTo(TYPE.REDIRECT)
-                    assertThat(last.target.isTopParent).isFalse
+                    assertThat(last.target.isTopParent).isNull()
                     assertThat(last.target.isBottomChild).isTrue
 
                     assertThat(Commons.isPathConnected(it))
@@ -135,12 +135,12 @@ class PathRedirectServiceTest {
                     assertThat(first.source.title).isEqualTo("the dark lord")
                     assertThat(first.source.type).isEqualTo(TYPE.REDIRECT)
                     assertThat(first.source.isTopParent).isTrue
-                    assertThat(first.source.isBottomChild).isFalse
+                    assertThat(first.source.isBottomChild).isNull()
 
                     val last = it.last()
                     assertThat(last.target.title).isEqualTo("mithrandir")
                     assertThat(last.target.type).isEqualTo(TYPE.REDIRECT)
-                    assertThat(last.target.isTopParent).isFalse
+                    assertThat(last.target.isTopParent).isNull()
                     assertThat(last.target.isBottomChild).isTrue
 
                     assertThat(Commons.isPathConnected(it))
@@ -169,12 +169,12 @@ class PathRedirectServiceTest {
                     assertThat(first.source.title).isEqualTo("the dark lord")
                     assertThat(first.source.type).isEqualTo(TYPE.REDIRECT)
                     assertThat(first.source.isTopParent).isTrue
-                    assertThat(first.source.isBottomChild).isFalse
+                    assertThat(first.source.isBottomChild).isNull()
 
                     val last = it.last()
                     assertThat(last.target.title).isEqualTo("mithrandir")
                     assertThat(last.target.type).isEqualTo(TYPE.REDIRECT)
-                    assertThat(last.target.isTopParent).isFalse
+                    assertThat(last.target.isTopParent).isNull()
                     assertThat(last.target.isBottomChild).isTrue
 
                     assertThat(Commons.isPathConnected(it))

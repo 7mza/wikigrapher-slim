@@ -28,7 +28,7 @@ class PathCtrlTest {
     private val path =
         listOf(
             RelationDto(
-                NodeSubDto("11", "wizard", TYPE.PAGE),
+                NodeSubDto("11", "wizard", TYPE.PAGE, isTopParent = true),
                 NodeSubDto("12", "good", TYPE.PAGE),
             ),
             RelationDto(
@@ -37,7 +37,7 @@ class PathCtrlTest {
             ),
             RelationDto(
                 NodeSubDto("27", "the bright lord", TYPE.REDIRECT),
-                NodeSubDto("9", "celebrimbor", TYPE.PAGE),
+                NodeSubDto("9", "celebrimbor", TYPE.PAGE, isBottomChild = true),
             ),
         )
 

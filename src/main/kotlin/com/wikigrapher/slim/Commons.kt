@@ -33,7 +33,7 @@ class Commons {
             val rootNodes =
                 relations
                     .map { it.source }
-                    .filter { it.isTopParent }
+                    .filter { it.isTopParent ?: false }
                     .toSet()
             val paths = mutableListOf<List<RelationDto>>()
 
@@ -46,7 +46,7 @@ class Commons {
                     return
                 }
                 val outgoingRelations = graph[currentNode.id].orEmpty()
-                if (currentNode.isBottomChild || outgoingRelations.isEmpty()) {
+                if (currentNode.isBottomChild ?: false || outgoingRelations.isEmpty()) {
                     paths.add(pathSoFar)
                     return
                 }

@@ -57,7 +57,7 @@ class PathPageServiceTest {
     private lateinit var reactiveFileReader: ReactiveFileReader
 
     @MockitoSpyBean
-    private lateinit var pageRepository: IPageRepository
+    private lateinit var repo: IPageRepository
 
     @BeforeEach
     fun init() {
@@ -106,7 +106,7 @@ class PathPageServiceTest {
             .expectNext(0)
             .expectNextCount(0)
             .verifyComplete()
-        verify(pageRepository, times(0))
+        verify(repo, times(0))
             .shortestPathLength(anyString(), anyString())
     }
 
@@ -148,12 +148,12 @@ class PathPageServiceTest {
                     assertThat(first.source.title).isEqualTo("gandalf")
                     assertThat(first.source.type).isEqualTo(TYPE.PAGE)
                     assertThat(first.source.isTopParent).isTrue
-                    assertThat(first.source.isBottomChild).isFalse
+                    assertThat(first.source.isBottomChild).isNull()
 
                     val last = it.last()
                     assertThat(last.target.title).isEqualTo("celebrimbor")
                     assertThat(last.target.type).isEqualTo(TYPE.PAGE)
-                    assertThat(last.target.isTopParent).isFalse
+                    assertThat(last.target.isTopParent).isNull()
                     assertThat(last.target.isBottomChild).isTrue
 
                     assertThat(Commons.isPathConnected(it))
@@ -168,7 +168,7 @@ class PathPageServiceTest {
             .create(service.shortestPathByTitle("gandalf", "gandalf"))
             .expectNextCount(0)
             .verifyComplete()
-        verify(pageRepository, times(0))
+        verify(repo, times(0))
             .shortestPath(anyString(), anyString())
     }
 
@@ -178,7 +178,7 @@ class PathPageServiceTest {
             .create(service.shortestPathByTitle("gandalf", "toto"))
             .expectNextCount(0)
             .verifyComplete()
-        verify(pageRepository, times(1))
+        verify(repo, times(1))
             .shortestPath(anyString(), anyString())
     }
 
@@ -223,12 +223,12 @@ class PathPageServiceTest {
                     assertThat(first.source.title).isEqualTo("gandalf")
                     assertThat(first.source.type).isEqualTo(TYPE.PAGE)
                     assertThat(first.source.isTopParent).isTrue
-                    assertThat(first.source.isBottomChild).isFalse
+                    assertThat(first.source.isBottomChild).isNull()
 
                     val last = it.last()
                     assertThat(last.target.title).isEqualTo("celebrimbor")
                     assertThat(last.target.type).isEqualTo(TYPE.PAGE)
-                    assertThat(last.target.isTopParent).isFalse
+                    assertThat(last.target.isTopParent).isNull()
                     assertThat(last.target.isBottomChild).isTrue
 
                     assertThat(Commons.isPathConnected(it))
@@ -291,12 +291,12 @@ class PathPageServiceTest {
                     assertThat(first.source.title).isEqualTo("wizard")
                     assertThat(first.source.type).isEqualTo(TYPE.PAGE)
                     assertThat(first.source.isTopParent).isTrue
-                    assertThat(first.source.isBottomChild).isFalse
+                    assertThat(first.source.isBottomChild).isNull()
 
                     val last = it.last()
                     assertThat(last.target.title).isEqualTo("celebrimbor")
                     assertThat(last.target.type).isEqualTo(TYPE.PAGE)
-                    assertThat(last.target.isTopParent).isFalse
+                    assertThat(last.target.isTopParent).isNull()
                     assertThat(last.target.isBottomChild).isTrue
 
                     assertThat(Commons.isPathConnected(it))
@@ -311,7 +311,7 @@ class PathPageServiceTest {
             .create(service.shortestPathsByTitle("wizard", "wizard", 0, 1))
             .expectNextCount(0)
             .verifyComplete()
-        verify(pageRepository, times(0))
+        verify(repo, times(0))
             .shortestPaths(anyString(), anyString(), anyInt(), anyInt())
     }
 
@@ -321,7 +321,7 @@ class PathPageServiceTest {
             .create(service.shortestPathsByTitle("wizard", "toto", 0, 1))
             .expectNextCount(0)
             .verifyComplete()
-        verify(pageRepository, times(1))
+        verify(repo, times(1))
             .shortestPaths(anyString(), anyString(), anyInt(), anyInt())
     }
 
@@ -369,12 +369,12 @@ class PathPageServiceTest {
                     assertThat(first.source.title).isEqualTo("gandalf")
                     assertThat(first.source.type).isEqualTo(TYPE.PAGE)
                     assertThat(first.source.isTopParent).isTrue
-                    assertThat(first.source.isBottomChild).isFalse
+                    assertThat(first.source.isBottomChild).isNull()
 
                     val last = it.last()
                     assertThat(last.target.title).isEqualTo("celebrimbor")
                     assertThat(last.target.type).isEqualTo(TYPE.PAGE)
-                    assertThat(last.target.isTopParent).isFalse
+                    assertThat(last.target.isTopParent).isNull()
                     assertThat(last.target.isBottomChild).isTrue
 
                     assertThat(Commons.isPathConnected(it))
@@ -389,7 +389,7 @@ class PathPageServiceTest {
             .create(service.allShortestPathsByTitle("wizard", "wizard"))
             .expectNextCount(0)
             .verifyComplete()
-        verify(pageRepository, times(0))
+        verify(repo, times(0))
             .shortestPaths(anyString(), anyString())
     }
 
@@ -399,7 +399,7 @@ class PathPageServiceTest {
             .create(service.allShortestPathsByTitle("wizard", "toto"))
             .expectNextCount(0)
             .verifyComplete()
-        verify(pageRepository, times(1))
+        verify(repo, times(1))
             .shortestPaths(anyString(), anyString())
     }
 

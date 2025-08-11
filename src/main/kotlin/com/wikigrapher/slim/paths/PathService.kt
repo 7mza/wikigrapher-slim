@@ -190,8 +190,14 @@ class PathService
                         parent: TmpNode?,
                     ) {
                         parent?.let {
-                            val source = it.toSubDto(it.title.equals(sourceTitle, true), false)
-                            val target = node.toSubDto(false, node.title.equals(targetTitle, true))
+                            val source =
+                                it.toSubDto(
+                                    isTopParent = it.title.equals(sourceTitle, true).takeIf { eq -> eq },
+                                )
+                            val target =
+                                node.toSubDto(
+                                    isBottomChild = node.title.equals(targetTitle, true).takeIf { eq -> eq },
+                                )
                             emitter.next(
                                 RelationDto(
                                     source = source,

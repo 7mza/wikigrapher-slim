@@ -95,63 +95,49 @@ interface IPathApi {
       "id": "3",
       "title": "gandalf",
       "type": "PAGE",
-      "isSourceTopParent": true,
-      "isTargetBottomChild": false
+      "isTopParent": true
     },
     "target": {
       "id": "11",
       "title": "wizard",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     }
   },
   {
     "source": {
       "id": "11",
       "title": "wizard",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     },
     "target": {
       "id": "15",
       "title": "wisdom",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     }
   },
   {
     "source": {
       "id": "15",
       "title": "wisdom",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     },
     "target": {
       "id": "27",
       "title": "the bright lord",
-      "type": "REDIRECT",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "REDIRECT"
     }
   },
   {
     "source": {
       "id": "27",
       "title": "the bright lord",
-      "type": "REDIRECT",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "REDIRECT"
     },
     "target": {
       "id": "9",
       "title": "celebrimbor",
       "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": true
+      "isBottomChild": true
     }
   }
 ]
@@ -211,63 +197,49 @@ interface IPathApi {
       "id": "3",
       "title": "gandalf",
       "type": "PAGE",
-      "isSourceTopParent": true,
-      "isTargetBottomChild": false
+      "isTopParent": true
     },
     "target": {
       "id": "11",
       "title": "wizard",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     }
   },
   {
     "source": {
       "id": "11",
       "title": "wizard",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     },
     "target": {
       "id": "15",
       "title": "wisdom",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     }
   },
   {
     "source": {
       "id": "15",
       "title": "wisdom",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     },
     "target": {
       "id": "27",
       "title": "the bright lord",
-      "type": "REDIRECT",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "REDIRECT"
     }
   },
   {
     "source": {
       "id": "27",
       "title": "the bright lord",
-      "type": "REDIRECT",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "REDIRECT"
     },
     "target": {
       "id": "9",
       "title": "celebrimbor",
       "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": true
+      "isBottomChild": true
     }
   }
 ]
@@ -308,63 +280,49 @@ interface IPathApi {
       "id": "3",
       "title": "gandalf",
       "type": "PAGE",
-      "isSourceTopParent": true,
-      "isTargetBottomChild": false
+      "isTopParent": true
     },
     "target": {
       "id": "11",
       "title": "wizard",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     }
   },
   {
     "source": {
       "id": "11",
       "title": "wizard",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     },
     "target": {
       "id": "15",
       "title": "wisdom",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     }
   },
   {
     "source": {
       "id": "15",
       "title": "wisdom",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     },
     "target": {
       "id": "27",
       "title": "the bright lord",
-      "type": "REDIRECT",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "REDIRECT"
     }
   },
   {
     "source": {
       "id": "27",
       "title": "the bright lord",
-      "type": "REDIRECT",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "REDIRECT"
     },
     "target": {
       "id": "9",
       "title": "celebrimbor",
       "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": true
+      "isBottomChild": true
     }
   }
 ]
@@ -432,63 +390,49 @@ interface IPathApi {
       "id": "3",
       "title": "gandalf",
       "type": "PAGE",
-      "isSourceTopParent": true,
-      "isTargetBottomChild": false
+      "isTopParent": true
     },
     "target": {
       "id": "11",
       "title": "wizard",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     }
   },
   {
     "source": {
       "id": "11",
       "title": "wizard",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     },
     "target": {
       "id": "15",
       "title": "wisdom",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     }
   },
   {
     "source": {
       "id": "15",
       "title": "wisdom",
-      "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "PAGE"
     },
     "target": {
       "id": "27",
       "title": "the bright lord",
-      "type": "REDIRECT",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "REDIRECT"
     }
   },
   {
     "source": {
       "id": "27",
       "title": "the bright lord",
-      "type": "REDIRECT",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": false
+      "type": "REDIRECT"
     },
     "target": {
       "id": "9",
       "title": "celebrimbor",
       "type": "PAGE",
-      "isSourceTopParent": false,
-      "isTargetBottomChild": true
+      "isBottomChild": true
     }
   }
 ]

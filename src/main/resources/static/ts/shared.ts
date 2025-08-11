@@ -40,8 +40,8 @@ export class FetchError extends Error {
   status: number;
   statusText: string;
   url: string;
-  body?: any;
-  code?: string;
+  body?: any | null;
+  code?: string | null;
 
   constructor({
     message,
@@ -55,8 +55,8 @@ export class FetchError extends Error {
     status: number;
     statusText: string;
     url: string;
-    body?: any;
-    code?: string;
+    body?: any | null;
+    code?: string | null;
   }) {
     super(message);
     this.status = status;
@@ -97,44 +97,15 @@ export interface Edge {
   label: string;
 }
 
-export class NodeDto {
+export interface NodeDto {
   id: string;
   title: string;
   type: NodeDtoType;
-  outgoing?: NodeDto[];
-  incoming?: NodeDto[];
-  categories?: CategoryDto[];
-  isTopParent: boolean;
-  isBottomChild: boolean;
-
-  constructor({
-    id,
-    title,
-    type,
-    outgoing,
-    incoming,
-    categories,
-    isTopParent,
-    isBottomChild,
-  }: {
-    id: string;
-    title: string;
-    type: NodeDtoType;
-    outgoing?: NodeDto[];
-    incoming?: NodeDto[];
-    categories?: CategoryDto[];
-    isTopParent: boolean;
-    isBottomChild: boolean;
-  }) {
-    this.id = id;
-    this.title = title;
-    this.type = type;
-    this.outgoing = outgoing;
-    this.incoming = incoming;
-    this.categories = categories;
-    this.isTopParent = isTopParent;
-    this.isBottomChild = isBottomChild;
-  }
+  outgoing?: NodeDto[] | null;
+  incoming?: NodeDto[] | null;
+  categories?: CategoryDto[] | null;
+  isTopParent?: boolean | null;
+  isBottomChild?: boolean | null;
 }
 
 export enum NodeDtoType {
@@ -148,15 +119,15 @@ export interface RelationDto {
 }
 
 export interface ThumbnailDto {
-  source?: string;
-  width?: number;
-  height?: number;
+  source?: string | null;
+  width?: number | null;
+  height?: number | null;
 }
 
 export interface CategoryDto {
   id: string;
   title: string;
-  contains?: NodeDto[];
+  contains?: NodeDto[] | null;
 }
 
 export async function fetchData<T>(url: string): Promise<T | null> {
@@ -224,7 +195,7 @@ export async function renderNetwork({
   nodes: DataSet<Node>;
   edges: DataSet<Edge>;
   options: Options;
-  focusNodeId?: string | number | null | undefined;
+  focusNodeId?: string | number | null;
 }): Promise<void> {
   clearGraph(wrapper);
   toggleSpinner({ show: true, message: 'plotting' });
@@ -289,7 +260,7 @@ export function toggleSpinner({
   message = 'fetching',
 }: {
   show: boolean;
-  message?: string;
+  message?: string | null;
 }): void {
   const spinnerContainer = document.getElementById(
     'spinner'
@@ -316,14 +287,22 @@ export function toggleSpinner({
   }
 }
 
+export function clearToasts(): void {
+  document.querySelectorAll('.toast').forEach((toastEl) => {
+    const instance = Toast.getInstance(toastEl);
+    if (instance) instance.dispose();
+    toastEl.remove();
+  });
+}
+
 export function showToast({
   message,
   theme = 'text-bg-danger',
 }: {
   message: string;
-  theme?: string;
+  theme?: string | null;
 }): void {
-  document.querySelectorAll('.toast').forEach((toast) => toast.remove());
+  clearToasts();
   const toastContainer = document.getElementById('toast-container');
   if (!toastContainer) {
     console.error('toast container not found');
@@ -341,7 +320,7 @@ export function showToast({
   toastBody.className = 'toast-body wrap p-3';
   toastBody.innerHTML = message;
   const closeButton = document.createElement('button');
-  closeButton.setAttribute('type', 'button');
+  closeButton.type = 'button';
   closeButton.className = 'btn-close me-2 m-auto';
   closeButton.setAttribute('data-bs-dismiss', 'toast');
   closeButton.setAttribute('aria-label', 'Close');
@@ -351,6 +330,10 @@ export function showToast({
   toastContainer.appendChild(toast);
   const bsToast = new Toast(toast);
   bsToast.show();
+  toast.addEventListener('hidden.bs.toast', () => {
+    bsToast.dispose();
+    toast.remove();
+  });
 }
 
 export function clearGraph(wrapper: NetworkWrapper): void {
@@ -432,7 +415,7 @@ export function setButtonState({
   enabled = true,
 }: {
   id: string;
-  enabled?: boolean;
+  enabled?: boolean | null;
 }): void {
   const button = document.getElementById(id) as HTMLButtonElement | null;
   if (!button) {
@@ -457,12 +440,12 @@ export function showModal({
   title = 'title',
   wikipediaHref = '#',
 }: {
-  src?: string;
-  height?: string | number;
-  width?: string | number;
-  alt?: string;
-  title?: string;
-  wikipediaHref?: string;
+  src?: string | null;
+  height?: string | number | null;
+  width?: string | number | null;
+  alt?: string | null;
+  title?: string | null;
+  wikipediaHref?: string | null;
 }): void {
   src = enforceDefault(src, DEFAULT_IMG_SRC);
   height = enforceDefault(height, '100%');
@@ -519,9 +502,9 @@ export function getNetworkOptions({
   },
 }: {
   isHierarchical: boolean;
-  solver?: string;
+  solver?: string | null;
   direction: string;
-  isPhysicsEnabled?: boolean;
+  isPhysicsEnabled?: boolean | null;
   solverTestCoefficient?: number;
   smooth?: {
     type: string;
@@ -699,6 +682,7 @@ export function setupGraphButton(
   }
   graphBtn.addEventListener('click', async () => {
     clearGraph(wrapper);
+    clearToasts();
     await handler();
   });
   return graphBtn;
@@ -712,7 +696,10 @@ export function setupDownloadButton(handler: () => Promise<void>): void {
     console.error('dwnBtn not found');
     return;
   }
-  dwnBtn.addEventListener('click', async () => await handler());
+  dwnBtn.addEventListener('click', async () => {
+    clearToasts();
+    await handler();
+  });
 }
 
 export function setupClearButton(formFieldIds: string[]): void {
@@ -726,5 +713,6 @@ export function setupClearButton(formFieldIds: string[]): void {
   clearBtn.addEventListener('click', () => {
     clearForm(formFieldIds);
     clearGraph(wrapper);
+    clearToasts();
   });
 }

@@ -1,6 +1,7 @@
 import {
   BASE_URL,
   clearGraph,
+  clearToasts,
   Colors,
   DataSet,
   downloadJSON,
@@ -231,6 +232,7 @@ function getFormData(): {
   }
   randBtn.addEventListener('click', async () => {
     clearGraph(wrapper);
+    clearToasts();
     await handleRandomButton();
   });
 

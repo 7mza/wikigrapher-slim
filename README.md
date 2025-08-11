@@ -65,6 +65,11 @@ docker compose up --build
 
 [http://localhost:8080/](http://localhost:8080/)
 
+## TODO
+
+[visjs/vis-network](https://github.com/visjs/vis-network)
+to [vasturiano/3d-force-graph](https://github.com/vasturiano/3d-force-graph)
+
 ## license
 
 this project is licensed under the [GNU Affero General Public License v3.0](./LICENSE.txt)

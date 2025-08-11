@@ -1,5 +1,6 @@
 package com.wikigrapher.slim
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class CategorySubDto(
@@ -23,12 +24,13 @@ data class NodeDto(
         )
 }
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class NodeSubDto(
     val id: String,
     var title: String,
     val type: TYPE,
-    val isTopParent: Boolean = false,
-    val isBottomChild: Boolean = false,
+    val isTopParent: Boolean? = null,
+    val isBottomChild: Boolean? = null,
 ) {
     init {
         title = Commons.sanitizeOutput(title)
