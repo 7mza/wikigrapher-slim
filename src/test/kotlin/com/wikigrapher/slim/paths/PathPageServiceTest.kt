@@ -62,7 +62,7 @@ class PathPageServiceTest {
     @BeforeEach
     fun init() {
         reactiveFileReader
-            .readFileFromResources("classpath:dump.cypher")
+            .readFileAsString("classpath:dump.cypher")
             .flatMap {
                 testDatabaseHelper.runCypherStatements(it)
             }.block()

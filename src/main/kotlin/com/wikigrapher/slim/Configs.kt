@@ -16,6 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.buffer.DataBufferUtils
 import org.springframework.core.io.buffer.DefaultDataBufferFactory
@@ -27,6 +28,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
+import java.io.InputStream
 import java.nio.charset.StandardCharsets
 
 @Configuration
@@ -137,7 +139,7 @@ class ReactiveAssetManifestReader(
 ) {
     private val assetMapMono: Mono<Map<String, String>> by lazy {
         reactiveFileReader
-            .readFileFromResources("classpath:/static/dist/asset-manifest.json")
+            .readFileAsString("classpath:/static/dist/asset-manifest.json")
             .map {
                 objectMapper.readValue(it, object : TypeReference<Map<String, String>>() {})
             }.cache()
@@ -155,33 +157,38 @@ class ReactiveAssetManifestReader(
 class ReactiveFileReader(
     private val resourceLoader: ResourceLoader,
 ) {
-    fun readFileFromResources(path: String): Mono<String> =
+    private fun readFileAsBytes(
+        path: String,
+        bufferSize: Int = 4096,
+    ): Mono<ByteArray> =
+        Mono
+            .fromCallable { resourceLoader.getResource(path) }
+            .subscribeOn(Schedulers.boundedElastic())
+            .flatMap { resource -> readFully(resource, bufferSize) }
+
+    fun readFileAsString(
+        path: String,
+        bufferSize: Int = 4096,
+    ): Mono<String> =
+        readFileAsBytes(path, bufferSize)
+            .map { String(it, StandardCharsets.UTF_8) }
+
+    fun readFileAsInputStream(path: String): Mono<InputStream> =
         Mono
             .fromCallable {
-                resourceLoader.getResource(path)
+                resourceLoader.getResource(path).inputStream
             }.subscribeOn(Schedulers.boundedElastic())
-            .flatMap { resource ->
-                DataBufferUtils
-                    .read(resource, DefaultDataBufferFactory(), 4096)
-                    .reduce { buf1, buf2 ->
-                        val combined =
-                            DefaultDataBufferFactory().allocateBuffer(
-                                buf1.readableByteCount() + buf2.readableByteCount(),
-                            )
-                        combined.write(buf1)
-                        combined.write(buf2)
-                        DataBufferUtils.release(buf1)
-                        DataBufferUtils.release(buf2)
-                        combined
-                    }.map { dataBuffer ->
-                        val content =
-                            dataBuffer
-                                .readableByteBuffers()
-                                .asSequence()
-                                .map { StandardCharsets.UTF_8.decode(it).toString() }
-                                .joinToString("")
-                        DataBufferUtils.release(dataBuffer)
-                        content
-                    }.cache()
+
+    private fun readFully(
+        resource: Resource,
+        bufferSize: Int,
+    ): Mono<ByteArray> =
+        DataBufferUtils
+            .join(DataBufferUtils.read(resource, DefaultDataBufferFactory(), bufferSize))
+            .map {
+                val bytes = ByteArray(it.readableByteCount())
+                it.read(bytes)
+                DataBufferUtils.release(it)
+                bytes
             }
 }
