@@ -1,6 +1,7 @@
 package com.wikigrapher.slim.wiki
 
 import com.wikigrapher.slim.Commons
+import com.wikigrapher.slim.SearchSuggestionsDto
 import com.wikigrapher.slim.ThumbnailDto
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,4 +24,7 @@ class WikiCtrl
             logger.debug("getWikipediaPageImage, title: {}", escapedTitle)
             return service.getWikipediaPageImage(escapedTitle, piThumbSize)
         }
+
+        override fun getWikipediaPageTitle(title: String): Mono<SearchSuggestionsDto> =
+            service.getWikipediaPageTitle(Commons.sanitizeInput(title))
     }

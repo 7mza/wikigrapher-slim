@@ -1,7 +1,13 @@
 package com.wikigrapher.slim
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
 data class CategorySubDto(
     val id: String,
@@ -94,8 +100,35 @@ data class PageDto(
     val pageImage: String?,
 )
 
+@JsonDeserialize(using = ThumbnailDtoDeserializer::class)
 data class ThumbnailDto(
     val source: String? = null,
     val width: Int? = null,
     val height: Int? = null,
+)
+
+class ThumbnailDtoDeserializer : JsonDeserializer<ThumbnailDto>() {
+    override fun deserialize(
+        p: JsonParser,
+        ctxt: DeserializationContext?,
+    ): ThumbnailDto {
+        val node: JsonNode = p.codec.readTree(p)
+        val source = node.get("source")?.asText() ?: node.get("url")?.asText()
+        val width = node.get("width")?.asInt()
+        val height = node.get("height")?.asInt()
+        return ThumbnailDto(source = source, width = width, height = height)
+    }
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SearchSuggestion(
+    val id: String,
+    val key: String,
+    val title: String? = null,
+    val description: String? = null,
+    val thumbnail: ThumbnailDto? = null,
+)
+
+data class SearchSuggestionsDto(
+    val pages: Set<SearchSuggestion>,
 )

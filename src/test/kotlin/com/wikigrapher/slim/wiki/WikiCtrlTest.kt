@@ -1,5 +1,7 @@
 package com.wikigrapher.slim.wiki
 
+import com.wikigrapher.slim.SearchSuggestion
+import com.wikigrapher.slim.SearchSuggestionsDto
 import com.wikigrapher.slim.ThumbnailDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -30,10 +32,32 @@ class WikiCtrlTest {
             height = 122,
         )
 
+    private val pages =
+        SearchSuggestionsDto(
+            pages =
+                setOf(
+                    SearchSuggestion(
+                        id = "241559",
+                        key = "Oreo",
+                        title = "Oreo",
+                        description = "Chocolate cookie with creme filling made by Nabisco",
+                        thumbnail =
+                            ThumbnailDto(
+                                source =
+                                    "//upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Oreo-Two-Cookies.png/60px-Oreo-Two-Cookies.png",
+                                width = 60,
+                                height = 37,
+                            ),
+                    ),
+                ),
+        )
+
     @BeforeEach
     fun beforeEach() {
         whenever(service.getWikipediaPageImage(anyString(), anyInt()))
             .thenReturn(Mono.just(thumbnail))
+        whenever(service.getWikipediaPageTitle(anyString()))
+            .thenReturn(Mono.just(pages))
     }
 
     @Test
@@ -50,5 +74,21 @@ class WikiCtrlTest {
                 .returnResult()
                 .responseBody
         assertThat(response).isEqualTo(thumbnail)
+    }
+
+    @Test
+    fun getWikipediaPageTitle() {
+        val response: SearchSuggestionsDto? =
+            webTestClient
+                .get()
+                .uri("/api/wiki/title?title=Oreo")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(SearchSuggestionsDto::class.java)
+                .returnResult()
+                .responseBody
+        assertThat(response).isEqualTo(pages)
     }
 }

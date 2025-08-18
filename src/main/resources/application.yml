@@ -1,5 +1,9 @@
 clients:
-  wikipedia:
+  wikipedia-api:
+    host: api.wikimedia.org
+    port:
+    proto: https
+  wikipedia-web:
     host: en.wikipedia.org
     port:
     proto: https

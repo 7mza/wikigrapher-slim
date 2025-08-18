@@ -130,6 +130,18 @@ export interface CategoryDto {
   contains?: NodeDto[] | null;
 }
 
+interface SearchSuggestionsDto {
+  pages?: SearchSuggestion[] | null;
+}
+
+interface SearchSuggestion {
+  id: string;
+  key: string;
+  title: string;
+  description?: string;
+  thumbnail?: ThumbnailDto;
+}
+
 export async function fetchData<T>(url: string): Promise<T | null> {
   try {
     const response = await fetch(url);
@@ -715,4 +727,131 @@ export function setupClearButton(formFieldIds: string[]): void {
     clearGraph(wrapper);
     clearToasts();
   });
+}
+
+export function setupSearchAutoComplete(id: string) {
+  const input = document.getElementById(id) as HTMLInputElement | null;
+  if (!input) {
+    console.error(`input ${id} not found!`);
+    throw new Error(`input ${id} not found!`);
+  }
+  const dropdown = document.getElementById(
+    `${id}-dropdown`
+  ) as HTMLInputElement | null;
+  if (!dropdown) {
+    console.error(`input ${id} not found!`);
+    throw new Error(`input ${id} not found!`);
+  }
+  let activeIndex = -1;
+  input.addEventListener(
+    'input',
+    debounce(async () => {
+      const title = input.value.trim();
+      if (!title) {
+        return clearDropdown();
+      }
+      const data: SearchSuggestionsDto | null = await fetchData(
+        `${BASE_URL}/api/wiki/title?title=${encodeURIComponent(title)}`
+      );
+      dropdown.innerHTML = '';
+      activeIndex = -1;
+      if (data?.pages?.length) {
+        for (const page of data.pages) {
+          const li = document.createElement('li');
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'dropdown-item d-flex align-items-start gap-2';
+          btn.addEventListener('click', () => {
+            input.value = page.key;
+            clearDropdown();
+          });
+          const imgWrapper = document.createElement('div');
+          imgWrapper.className = 'flex-shrink-0';
+          const img = document.createElement('img');
+          if (page.thumbnail?.source) {
+            img.src = page.thumbnail.source.startsWith('http')
+              ? page.thumbnail.source
+              : `https:${page.thumbnail.source}`;
+          } else {
+            img.src = DEFAULT_IMG_SRC;
+          }
+          img.alt = page.title;
+          img.className = 'rounded';
+          img.style.width = '40px';
+          img.style.height = '40px';
+          img.style.objectFit = 'cover';
+          imgWrapper.appendChild(img);
+          btn.appendChild(imgWrapper);
+          const textWrapper = document.createElement('div');
+          textWrapper.className =
+            'd-flex flex-column text-start overflow-hidden';
+          const title = document.createElement('div');
+          title.textContent = page.title;
+          title.className = 'fw-semibold text-truncate';
+          const desc = document.createElement('small');
+          desc.textContent = page.description || '';
+          desc.className = 'text-muted text-truncate';
+          textWrapper.appendChild(title);
+          textWrapper.appendChild(desc);
+          btn.appendChild(textWrapper);
+          li.appendChild(btn);
+          dropdown.appendChild(li);
+        }
+        dropdown.classList.add('show');
+      } else {
+        clearDropdown();
+      }
+    }, 500)
+  );
+
+  document.addEventListener('click', (e) => {
+    if (
+      !input.contains(e.target as globalThis.Node) &&
+      !dropdown.contains(e.target as globalThis.Node)
+    ) {
+      clearDropdown();
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    const items = dropdown.querySelectorAll<HTMLButtonElement>(
+      'button.dropdown-item'
+    );
+    if (!items.length || !dropdown.classList.contains('show')) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % items.length;
+      updateActive(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      updateActive(items);
+    } else if (e.key === 'Enter' && activeIndex >= 0) {
+      e.preventDefault();
+      items[activeIndex].click();
+    } else if (e.key === 'Escape') {
+      clearDropdown();
+    }
+  });
+
+  function updateActive(items: NodeListOf<HTMLButtonElement>) {
+    items.forEach((el, i) => el.classList.toggle('active', i === activeIndex));
+    items[activeIndex]?.scrollIntoView({ block: 'nearest' });
+  }
+
+  function clearDropdown() {
+    if (dropdown) {
+      dropdown.classList.remove('show');
+      dropdown.innerHTML = '';
+      activeIndex = -1;
+    }
+  }
+
+  function debounce<T extends (...args: any[]) => void>(fn: T, wait: number) {
+    let t: number | undefined;
+    return (...args: Parameters<T>) => {
+      if (t !== undefined) window.clearTimeout(t);
+      t = window.setTimeout(() => fn(...args), wait);
+    };
+  }
 }

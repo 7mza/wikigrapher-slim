@@ -1,7 +1,9 @@
 package com.wikigrapher.slim.wiki
 
+import com.wikigrapher.slim.SearchSuggestionsDto
 import com.wikigrapher.slim.WikipediaPageImageDto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
@@ -11,13 +13,16 @@ interface IWikiClient {
         title: String,
         piThumbSize: Int? = 200,
     ): Mono<WikipediaPageImageDto>
+
+    fun getWikipediaPageTitle(title: String): Mono<SearchSuggestionsDto>
 }
 
 @Service
 class WikiClient
     @Autowired
     constructor(
-        private val webClient: WebClient,
+        @param:Qualifier("wikipedia-web-client") private val webClient: WebClient,
+        @param:Qualifier("wikipedia-api-client") private val apiClient: WebClient,
     ) : IWikiClient {
         override fun getWikipediaPageImage(
             title: String,
@@ -36,4 +41,20 @@ class WikiClient
                         .build(title, piThumbSize)
                 }.retrieve()
                 .bodyToMono(WikipediaPageImageDto::class.java)
+
+        override fun getWikipediaPageTitle(title: String): Mono<SearchSuggestionsDto> {
+            val project = "wikipedia"
+            val language = "en"
+            val limit = 5
+            return apiClient
+                .get()
+                .uri {
+                    it
+                        .path("/core/v1/{project}/{language}/search/title")
+                        .queryParam("q", "{title}")
+                        .queryParam("limit", "{limit}")
+                        .build(project, language, title, limit)
+                }.retrieve()
+                .bodyToMono(SearchSuggestionsDto::class.java)
+        }
     }

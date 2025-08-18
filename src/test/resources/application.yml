@@ -1,5 +1,9 @@
 clients:
-  wikipedia:
+  wikipedia-api:
+    host: localhost
+    port:
+    proto: http
+  wikipedia-web:
     host: localhost
     port:
     proto: http

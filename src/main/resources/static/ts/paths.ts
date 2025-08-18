@@ -25,6 +25,7 @@ import {
   setupDownloadButton,
   setupGraphButton,
   setupNumericInput,
+  setupSearchAutoComplete,
   showToast,
   toggleSelect,
   wrapper,
@@ -284,6 +285,9 @@ function getFormData(): {
     toggleSelect({ id: 'solver-select', enabled: !isHierarchical });
     toggleSelect({ id: 'direction-select', enabled: isHierarchical });
   });
+
+  setupSearchAutoComplete('source-input');
+  setupSearchAutoComplete('target-input');
 
   initPopovers();
   initTooltips();

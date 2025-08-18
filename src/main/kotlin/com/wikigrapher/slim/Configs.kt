@@ -52,13 +52,26 @@ class DefaultConfigs {
                 .contact(Contact().name("dev").email("alias.ducky891@passinbox.com")),
         )
 
-    @Bean
+    @Bean(name = ["wikipedia-web-client"])
     fun wikipediaWebClient(
         builder: WebClient.Builder,
         clientsProperties: ClientsProperties,
     ): WebClient {
-        val baseUrl = clientsProperties.wikipedia!!.getBaseUrl()
-        logger.debug("wikipedia baseUrl: {}", baseUrl)
+        val baseUrl = clientsProperties.wikipediaWeb!!.getBaseUrl()
+        logger.debug("wikipedia web baseUrl: {}", baseUrl)
+        return builder
+            .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .baseUrl(baseUrl)
+            .build()
+    }
+
+    @Bean(name = ["wikipedia-api-client"])
+    fun wikipediaApiClient(
+        builder: WebClient.Builder,
+        clientsProperties: ClientsProperties,
+    ): WebClient {
+        val baseUrl = clientsProperties.wikipediaApi!!.getBaseUrl()
+        logger.debug("wikipedia api baseUrl: {}", baseUrl)
         return builder
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .baseUrl(baseUrl)
@@ -94,7 +107,8 @@ class InitProperties {
 @Configuration
 @ConfigurationProperties(prefix = "clients")
 class ClientsProperties {
-    var wikipedia: Client? = null
+    var wikipediaApi: Client? = null
+    var wikipediaWeb: Client? = null
 
     data class Client(
         var host: String? = null,

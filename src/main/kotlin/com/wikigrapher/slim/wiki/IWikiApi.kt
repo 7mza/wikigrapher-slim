@@ -1,5 +1,6 @@
 package com.wikigrapher.slim.wiki
 
+import com.wikigrapher.slim.SearchSuggestionsDto
 import com.wikigrapher.slim.ThumbnailDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -76,4 +77,71 @@ interface IWikiApi {
         @Max(value = 400, message = "piThumbSize max 400")
         piThumbSize: Int? = 200,
     ): Mono<ThumbnailDto>
+
+    @GetMapping("/title")
+    @Operation(
+        summary = "search/autocomplete for wikipedia page titles",
+        description = "CORS pass through",
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "OK",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = SearchSuggestionsDto::class),
+                        examples = [
+                            ExampleObject(
+                                name = "example-1",
+// @formatter:off
+                                value =
+"""
+{
+  "pages": [
+    {
+      "id": "2075544",
+      "key": "Oreo_O's",
+      "title": "Oreo O's",
+      "description": "Breakfast cereal made by Post",
+      "thumbnail": {
+        "source": "//upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Oreo_O%27s_logo.png/60px-Oreo_O%27s_logo.png",
+        "width": 60,
+        "height": 34
+      }
+    },
+    {
+      "id": "241559",
+      "key": "Oreo",
+      "title": "Oreo",
+      "description": "Chocolate cookie with creme filling made by Nabisco",
+      "thumbnail": {
+        "source": "//upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Oreo-Two-Cookies.png/60px-Oreo-Two-Cookies.png",
+        "width": 60,
+        "height": 37
+      }
+    }
+  ]
+}
+""",
+// @formatter:on
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun getWikipediaPageTitle(
+        @Schema(
+            description = "title to search for",
+            example = "Oreo",
+            required = true,
+        )
+        @RequestParam
+        @NotBlank(message = "title must not be blank")
+        @NotEmpty(message = "title must not be empty")
+        title: String,
+    ): Mono<SearchSuggestionsDto>
 }
