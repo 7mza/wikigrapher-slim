@@ -138,8 +138,8 @@ interface SearchSuggestion {
   id: string;
   key: string;
   title: string;
-  description?: string;
-  thumbnail?: ThumbnailDto;
+  description?: string | null;
+  thumbnail?: ThumbnailDto | null;
 }
 
 export async function fetchData<T>(url: string): Promise<T | null> {
@@ -801,7 +801,7 @@ export function setupSearchAutoComplete(id: string) {
       } else {
         clearDropdown();
       }
-    }, 500)
+    }, 250)
   );
 
   document.addEventListener('click', (e) => {

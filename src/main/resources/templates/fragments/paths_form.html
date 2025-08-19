@@ -7,7 +7,7 @@
       class="formz bg-body container mt-3 rounded border py-3 text-center"
       th:fragment="paths_form">
       <div class="row g-3 align-items-center mb-3">
-        <div class="input-group">
+        <div class="input-group position-relative">
           <span class="input-group-text"
             ><i class="bi bi-box-arrow-in-right"></i
           ></span>
@@ -22,7 +22,7 @@
             type="text"
             th:value="${source}" />
           <ul
-            class="dropdown-menu w-100"
+            class="dropdown-menu w-100 position-absolute top-100 start-0 mt-1"
             id="source-input-dropdown"></ul>
         </div>
         <div class="input-group">
@@ -36,7 +36,7 @@
             <i class="bi bi bi-arrow-down-up"></i>
           </button>
         </div>
-        <div class="input-group">
+        <div class="input-group position-relative">
           <span class="input-group-text"
             ><i class="bi bi-box-arrow-left"></i
           ></span>
@@ -51,7 +51,7 @@
             type="text"
             th:value="${target}" />
           <ul
-            class="dropdown-menu w-100"
+            class="dropdown-menu w-100 position-absolute top-100 start-0 mt-1"
             id="target-input-dropdown"></ul>
         </div>
       </div>
