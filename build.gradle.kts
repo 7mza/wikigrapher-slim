@@ -7,14 +7,14 @@ import org.owasp.dependencycheck.reporting.ReportGenerator.Format.HTML
 plugins {
     kotlin("jvm") version "2.2.10"
     kotlin("plugin.spring") version "2.2.10"
-    id("org.springframework.boot") version "3.5.4"
+    id("org.springframework.boot") version "3.5.5"
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("com.autonomousapps.dependency-analysis") version "2.19.0"
+    id("com.autonomousapps.dependency-analysis") version "3.0.0"
     id("com.bmuschko.docker-remote-api") version "9.4.0"
     id("com.github.ben-manes.versions") version "0.52.0"
     id("com.github.node-gradle.node") version "7.1.0"
-    id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
+    id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
     id("org.owasp.dependencycheck") version "12.1.3"
     jacoco
 }
@@ -43,7 +43,7 @@ val htmlunitVersion = "4.14.0"
 val mockitoAgent = configurations.create("mockitoAgent")
 val mockitoCoreVersion = "5.19.0"
 val mockitoKotlinVersion = "6.0.0"
-val openapiVersion = "2.8.9"
+val openapiVersion = "2.8.10"
 val springCloudVersion = "2025.0.0"
 
 dependencies {
