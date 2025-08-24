@@ -111,8 +111,8 @@ async function prepareNetworkData({
 
 async function handleRandomButton(): Promise<void> {
   try {
-    setInputValue({ id: 'skip-input', value: 0 });
-    setInputValue({ id: 'limit-input', value: 1 });
+    // setInputValue({ id: 'skip-input', value: 0 });
+    // setInputValue({ id: 'limit-input', value: 1 });
     const pages: NodeDto[] | null = await fetchWithUI(
       `${BASE_URL}/api/core/page/random?n=2`
     );
@@ -261,7 +261,7 @@ function getFormData(): {
   ]);
 
   setupNumericInput('skip-input', '0');
-  setupNumericInput('limit-input', '1');
+  setupNumericInput('limit-input', '5');
 
   const hierarchicalCheckbox = document.getElementById(
     'hierarchical-checkbox'

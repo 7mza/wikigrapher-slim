@@ -668,7 +668,9 @@ export function setupNumericInput(
       console.error(`${elementId} target not found`);
       return;
     }
-    target.value = target.value.replace(/[^0-9.]/g, replacementChar);
+    if (/[^0-9.]/.test(target.value)) {
+      target.value = replacementChar;
+    }
   });
 }
 
