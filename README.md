@@ -1,30 +1,37 @@
 # <img src="./docs/wikigrapher.png" alt="drawing" width="50"/> wikigrapher-slim
 
-explore wikipedia as a graph [https://wikigrapher.com/](https://wikigrapher.com)
+explore wikipedia as a knowledge graph [https://wikigrapher.com/](https://wikigrapher.com)
 
-![paths](./docs/paths.jpg)
+standalone web app for [7mza/wikigrapher-generator](https://github.com/7mza/wikigrapher-generator)
 
-standalone public release web app for [7mza/wikigrapher-generator](https://github.com/7mza/wikigrapher-generator)
+## stack
 
-## reqs
+* kotlin / spring webflux
+* spring data neo4j
+* thymeleaf / typescript
+* bootstrap / vis network
+* gradle / npm / webpack
 
-[jdk 24](https://sdkman.io)
+## requirements
+
+[sdkman](https://sdkman.io)
 
 ```shell
 sdk env install
 ```
 
-[node lts](https://github.com/nvm-sh/nvm)
+[nvm](https://github.com/nvm-sh/nvm)
 
 ```shell
 nvm install
 ```
 
-[docker](https://docs.docker.com/desktop)
+docker
 
 ## setup neo4j
 
-refer to [7mza/wikigrapher-generator](https://github.com/7mza/wikigrapher-generator) to generate graph & setup neo4j
+refer to [7mza/wikigrapher-generator](https://github.com/7mza/wikigrapher-generator) to generate wikipedia graph & setup
+neo4j
 
 ## build
 
@@ -32,23 +39,13 @@ refer to [7mza/wikigrapher-generator](https://github.com/7mza/wikigrapher-genera
 npm i
 ```
 
-webpack production mode
-
 ```shell
 
 npm run build && ./gradlew clean ktlintFormat ktlintCheck build
-```
 
-webpack development mode
+# or for source maps
 
-```shell
 npm run build:dev && ./gradlew clean ktlintFormat ktlintCheck build -Pmode=development
-```
-
-if gradle-node-plugin is giving errors
-
-```shell
-./gradlew --stop
 ```
 
 ## run
@@ -64,11 +61,6 @@ docker compose up --build
 ```
 
 [http://localhost:8080/](http://localhost:8080/)
-
-## TODO
-
-[visjs/vis-network](https://github.com/visjs/vis-network)
-to [vasturiano/3d-force-graph](https://github.com/vasturiano/3d-force-graph)
 
 ## license
 
