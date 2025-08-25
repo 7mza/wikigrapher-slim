@@ -10,15 +10,29 @@ clients:
 init:
   paths:
     - source: Gandalf
-      target: Couscous
+      target: Tetris
     - source: Mordor
       target: Roquefort
     - source: Albus_Dumbledore
       target: Poker
     - source: Coca-Cola
-      target: Roquefort
+      target: Novichok
     - source: Morgoth
-      target: Ubuntu
+      target: Donald_Trump
+    - source: Tetris
+      target: Tour_de_France
+    - source: Emmanuel_Macron
+      target: Zoolander
+    - source: China
+      target: Bat_as_food
+    - source: United_States
+      target: Idiocracy
+    - source: France
+      target: White_flag
+    - source: United_Kingdom
+      target: Tooth_decay
+    - source: Brad_Pitt
+      target: Kebab
 logging:
   include-application-name: false
   level:

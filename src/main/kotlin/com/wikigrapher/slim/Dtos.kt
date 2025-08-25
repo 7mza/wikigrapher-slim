@@ -11,17 +11,26 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
 data class CategorySubDto(
     val id: String,
-    val title: String,
-)
+    var title: String,
+) {
+    init {
+        title = Commons.sanitizeOutput(title)
+    }
+}
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class NodeDto(
     val id: String,
-    val title: String,
+    var title: String,
     val type: TYPE,
-    val outgoing: Set<NodeSubDto>? = emptySet(),
-    val incoming: Set<NodeSubDto>? = emptySet(),
-    val categories: Set<CategorySubDto>? = emptySet(),
+    val outgoing: Set<NodeSubDto>? = null,
+    val incoming: Set<NodeSubDto>? = null,
+    val categories: Set<CategorySubDto>? = null,
 ) {
+    init {
+        title = Commons.sanitizeOutput(title)
+    }
+
     fun toSubDto() =
         NodeSubDto(
             this.id,
@@ -66,6 +75,7 @@ data class DumpNodes(
     val pages: Long,
     val redirects: Long,
     val categories: Long,
+    val orphans: Long,
 )
 
 data class DumpRelations(

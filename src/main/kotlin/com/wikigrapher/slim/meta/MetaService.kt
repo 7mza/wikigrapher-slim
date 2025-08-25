@@ -6,6 +6,7 @@ import com.wikigrapher.slim.DumpMetaDto
 import com.wikigrapher.slim.DumpNodes
 import com.wikigrapher.slim.DumpRelations
 import com.wikigrapher.slim.categories.ICategoryRepository
+import com.wikigrapher.slim.orphans.IOrphanRepository
 import com.wikigrapher.slim.pages.IPageRepository
 import com.wikigrapher.slim.redirects.IRedirectRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +25,7 @@ class MetaService
         private val redirectRepository: IRedirectRepository,
         private val categoryRepository: ICategoryRepository,
         private val metaRepository: IMetaRepository,
+        private val orphanRepository: IOrphanRepository,
         private val objectMapper: ObjectMapper,
     ) : IMetaService {
         override fun findDumpMeta(): Mono<DumpMetaDto> =
@@ -33,13 +35,14 @@ class MetaService
                     pageRepository.countPages(),
                     redirectRepository.countRedirects(),
                     categoryRepository.countCategories(),
+                    orphanRepository.countOrphans(),
                     pageRepository.countLinkTo(),
                     redirectRepository.countRedirectTo(),
                     categoryRepository.countContains(),
                 ).map {
                     Commons.parseJson<Dump>(it.t1.getValue(), objectMapper).toDto(
-                        nodes = DumpNodes(it.t2, it.t3, it.t4),
-                        relations = DumpRelations(it.t5, it.t6, it.t7),
+                        nodes = DumpNodes(it.t2, it.t3, it.t4, it.t5),
+                        relations = DumpRelations(it.t6, it.t7, it.t8),
                     )
                 }
     }

@@ -10,7 +10,7 @@ plugins {
     id("org.springframework.boot") version "3.5.5"
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("com.autonomousapps.dependency-analysis") version "3.0.0"
+    id("com.autonomousapps.dependency-analysis") version "3.0.1"
     id("com.bmuschko.docker-remote-api") version "9.4.0"
     id("com.github.ben-manes.versions") version "0.52.0"
     id("com.github.node-gradle.node") version "7.1.0"
@@ -103,9 +103,9 @@ tasks.withType<Test> {
         "-javaagent:${mockitoAgent.asPath}",
         "-XX:+EnableDynamicAgentLoading",
     )
-//    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_13)) {
-//        jvmArgs("-XX:+AllowRedefinitionToAddDeleteMethods")
-//    }
+    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_13)) {
+        jvmArgs("-XX:+AllowRedefinitionToAddDeleteMethods")
+    }
     finalizedBy(tasks.jacocoTestReport)
     configure<JacocoTaskExtension> {
         excludes = listOf("org/htmlunit/**", "jdk.internal.*")

@@ -4,9 +4,6 @@
 **/*.min.*
 **/asset-manifest.json
 
-import/**
-!import/.gitkeep
-
 # Created by https://www.toptal.com/developers/gitignore/api/git,java,linux,gradle,kotlin,intellij+all,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=git,java,linux,gradle,kotlin,intellij+all,node
 

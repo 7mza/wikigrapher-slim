@@ -73,8 +73,8 @@ class MetaServiceTest {
                         lang = "en",
                         date = "11111111",
                         url = "https://dumps.wikimedia.org/enwiki/11111111",
-                        nodes = DumpNodes(pages = 10, redirects = 8, categories = 3),
-                        relations = DumpRelations(linkTo = 13, redirectTo = 8, belongTo = 8),
+                        nodes = DumpNodes(pages = 11, redirects = 11, categories = 3, orphans = 3),
+                        relations = DumpRelations(linkTo = 14, redirectTo = 8, belongTo = 10),
                     ),
                 )
                 true

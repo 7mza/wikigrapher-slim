@@ -27,7 +27,7 @@ class MetaCtrlTest {
             lang = "en",
             date = "11111111",
             url = "https://dumps.wikimedia.org/enwiki/11111111",
-            nodes = DumpNodes(pages = 9, redirects = 7, categories = 3),
+            nodes = DumpNodes(pages = 9, redirects = 7, categories = 3, orphans = 3),
             relations = DumpRelations(linkTo = 11, redirectTo = 7, belongTo = 8),
         )
 

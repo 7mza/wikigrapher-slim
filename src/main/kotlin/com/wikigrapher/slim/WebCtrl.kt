@@ -64,7 +64,7 @@ class WebCtrl
                     lang = "EN",
                     date = "fallback",
                     url = "fallback",
-                    nodes = DumpNodes(-1, -1, -1),
+                    nodes = DumpNodes(-1, -1, -1, -1),
                     relations = DumpRelations(-1, -1, -1),
                 ),
             )
