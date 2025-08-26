@@ -1,6 +1,7 @@
 package com.wikigrapher.slim.pages
 
 import com.wikigrapher.slim.NodeDto
+import com.wikigrapher.slim.NodeSubDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
@@ -33,14 +34,16 @@ interface IPageApi {
                 content = [
                     Content(
                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        array = ArraySchema(schema = Schema(implementation = NodeDto::class)),
+                        array = ArraySchema(schema = Schema(implementation = NodeSubDto::class)),
                         examples = [
                             ExampleObject(
                                 name = "example-0",
+// @formatter:off
                                 value =
-                                    """
-[{"id":"3","title":"gandalf","type":"PAGE","outgoing":[],"incoming":[],"categories":[]}]
+"""
+[{ "id": "3", "title": "gandalf", "type": "PAGE" }]
 """,
+// @formatter:on
                             ),
                         ],
                     ),
@@ -54,5 +57,5 @@ interface IPageApi {
         @Positive(message = "n must be greater than 0")
         @Max(value = 10, message = "n must be lower or eq to 10")
         n: Int? = 1,
-    ): Flux<NodeDto>
+    ): Flux<NodeSubDto>
 }

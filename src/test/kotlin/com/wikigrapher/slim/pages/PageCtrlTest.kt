@@ -48,7 +48,7 @@ class PageCtrlTest {
     @BeforeEach
     fun beforeEach() {
         whenever(service.getNRandomPages(anyInt()))
-            .thenReturn(Flux.fromIterable(listOf(page, page)))
+            .thenReturn(Flux.fromIterable(listOf(page.toSubDto(), page.toSubDto())))
     }
 
     @Test

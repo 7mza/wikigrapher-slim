@@ -1,7 +1,7 @@
 package com.wikigrapher.slim.pages
 
 import com.wikigrapher.slim.DELETE_ALL_QUERY
-import com.wikigrapher.slim.NodeDto
+import com.wikigrapher.slim.NodeSubDto
 import com.wikigrapher.slim.ReactiveFileReader
 import com.wikigrapher.slim.TestContainersFactory
 import com.wikigrapher.slim.TestDatabaseHelper
@@ -68,12 +68,12 @@ class PageServiceTest {
         StepVerifier
             .create(service.getNRandomPages(2))
             .expectNextMatches {
-                assertThat(it).isInstanceOf(NodeDto::class.java)
+                assertThat(it).isInstanceOf(NodeSubDto::class.java)
                 assertThat(it.id).isNotNull
                 id1 = it.id
                 true
             }.expectNextMatches {
-                assertThat(it).isInstanceOf(NodeDto::class.java)
+                assertThat(it).isInstanceOf(NodeSubDto::class.java)
                 assertThat(it.id).isNotNull
                 id2 = it.id
                 true
