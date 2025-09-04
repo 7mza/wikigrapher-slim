@@ -3,6 +3,7 @@ clients:
     host: api.wikimedia.org
     port:
     proto: https
+    access-token: ${WIKIPEDIA_API_ACCESS_TOKEN}
   wikipedia-web:
     host: en.wikipedia.org
     port:
@@ -11,28 +12,22 @@ init:
   paths:
     - source: Gandalf
       target: Tetris
-    - source: Mordor
-      target: Roquefort
+    - source: Paris
+      target: Johannesburg
     - source: Albus_Dumbledore
       target: Poker
     - source: Coca-Cola
-      target: Novichok
-    - source: Morgoth
-      target: Donald_Trump
+      target: Ketchup
+    - source: Fallout_(franchise)
+      target: Uno_(card_game)
     - source: Tetris
       target: Tour_de_France
-    - source: Emmanuel_Macron
+    - source: Titanic
       target: Zoolander
     - source: China
-      target: Bat_as_food
+      target: Great_Pyramid_of_Cholula
     - source: United_States
-      target: Idiocracy
-    - source: France
-      target: White_flag
-    - source: United_Kingdom
-      target: Tooth_decay
-    - source: Brad_Pitt
-      target: Kebab
+      target: Nokia_3310
 logging:
   include-application-name: false
   level:

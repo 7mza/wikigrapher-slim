@@ -22,7 +22,7 @@ export default {
   devtool: MODE === 'development' ? 'source-map' : false,
   entry: {
     vendor: {
-      import: ['bootstrap', 'vis-network/peer', 'vis-data/peer'],
+      import: ['bootstrap', 'vis-network/peer', 'vis-data/peer', 'file-saver'],
     },
     shared: {
       import: './src/main/resources/static/ts/shared.ts',

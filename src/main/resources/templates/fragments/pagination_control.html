@@ -10,7 +10,7 @@
             <span class="input-group-text">skip</span>
             <input
               class="form-control"
-              th:attr="id='skip-input', data-bs-title='skip initial n paths', placeholder='skip initial n paths', value=0"
+              th:attr="id='skipInput', data-bs-title='skip initial N paths', placeholder='skip initial N paths', value=${skip}"
               data-bs-delay='{"show":1000,"hide":150}'
               data-bs-placement="bottom"
               data-bs-toggle="tooltip" />
@@ -21,7 +21,20 @@
             <span class="input-group-text">limit</span>
             <input
               class="form-control"
-              th:attr="id='limit-input', data-bs-title='limit to n paths', placeholder='limit to n paths', value=5"
+              th:attr="id='limitInput', data-bs-title='limit to N paths', placeholder='limit to N paths', value=${limit}"
+              data-bs-delay='{"show":1000,"hide":150}'
+              data-bs-placement="bottom"
+              data-bs-toggle="tooltip" />
+          </div>
+        </div>
+      </div>
+      <div class="row g-3 align-items-center mt-1">
+        <div class="col-auto">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text">solverTestCoefficient</span>
+            <input
+              class="form-control"
+              th:attr="id='solverTestCoefficientInput', data-bs-title='control graph drawing distances', placeholder='control graph drawing distances', value=1.2"
               data-bs-delay='{"show":1000,"hide":150}'
               data-bs-placement="bottom"
               data-bs-toggle="tooltip" />

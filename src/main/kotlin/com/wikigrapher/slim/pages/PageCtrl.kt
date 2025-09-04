@@ -1,6 +1,5 @@
 package com.wikigrapher.slim.pages
 
-import com.wikigrapher.slim.NodeDto
 import com.wikigrapher.slim.NodeSubDto
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

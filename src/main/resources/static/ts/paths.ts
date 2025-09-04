@@ -1,5 +1,6 @@
 import {
   BASE_URL,
+  clearForm,
   clearGraph,
   clearToasts,
   Colors,
@@ -10,20 +11,20 @@ import {
   getCheckboxState,
   getInputValue,
   getNetworkOptions,
+  getRequestParam,
   initPopovers,
   initTooltips,
   MAX_NODE_SIZE,
   Node,
   NodeDto,
   NodeDtoType,
+  refitGraphOnResize,
   RelationDto,
   renderNetwork,
   reverseInputs,
   safeDecodeURIComponent,
   setInputValue,
-  setupClearButton,
-  setupDownloadButton,
-  setupGraphButton,
+  setupButton,
   setupNumericInput,
   setupSearchAutoComplete,
   showToast,
@@ -111,14 +112,12 @@ async function prepareNetworkData({
 
 async function handleRandomButton(): Promise<void> {
   try {
-    // setInputValue({ id: 'skip-input', value: 0 });
-    // setInputValue({ id: 'limit-input', value: 1 });
     const pages: NodeDto[] | null = await fetchWithUI(
       `${BASE_URL}/api/core/page/random?n=2`
     );
     if (pages && pages.length >= 2) {
-      setInputValue({ id: 'source-input', value: pages![0].title });
-      setInputValue({ id: 'target-input', value: pages![1].title });
+      setInputValue({ id: 'sourceInput', value: pages![0].title });
+      setInputValue({ id: 'targetInput', value: pages![1].title });
       await handleGraphButton();
     } else {
       await handleRandomButton(); // FIXME: danger
@@ -130,21 +129,27 @@ async function handleRandomButton(): Promise<void> {
 
 async function handleGraphButton(): Promise<void> {
   try {
-    const { source, target, skip, limit } = getFormData();
+    const { source, target, skip, limit, solverTestCoefficient } =
+      getFormData();
     if (!source || !target) {
       showToast({
+        id: 'toast-container',
         message: 'Enter both source and target',
         theme: 'text-bg-warning',
       });
       return;
     }
+    const encodedSourceTitle = encodeURIComponent(source);
+    const encodedTargetTitle = encodeURIComponent(target);
+    const relativePath = `?sourceTitle=${encodedSourceTitle}&targetTitle=${encodedTargetTitle}&skip=${skip}&limit=${limit}`;
+    history.pushState(null, '', `${relativePath}&fetch=true`);
     const data: RelationDto[] | null = await fetchWithUI(
-      `${BASE_URL}/api/core/paths?sourceTitle=${encodeURIComponent(source)}&targetTitle=${encodeURIComponent(target)}&skip=${skip}&limit=${limit}`
+      `${BASE_URL}/api/core/paths${relativePath}`
     );
     if (data?.length) {
       const { parentNode, lastChildNode } = findParentAndLastChild(data);
-      setInputValue({ id: 'source-input', value: parentNode.title });
-      setInputValue({ id: 'target-input', value: lastChildNode.title });
+      setInputValue({ id: 'sourceInput', value: parentNode.title });
+      setInputValue({ id: 'targetInput', value: lastChildNode.title });
       const { nodes: nodes, edges: edges } = await prepareNetworkData({
         data: data,
         parentNode: parentNode,
@@ -157,6 +162,7 @@ async function handleGraphButton(): Promise<void> {
         isPhysicsEnabled: ((size) => {
           if (size > MAX_NODE_SIZE) {
             showToast({
+              id: 'toast-container',
               message: `Data too large, physics will be disabled`,
               theme: 'text-bg-warning',
             });
@@ -164,8 +170,10 @@ async function handleGraphButton(): Promise<void> {
           }
           return true;
         })(nodes.length),
+        solverTestCoefficient: solverTestCoefficient,
       });
       await renderNetwork({
+        id: 'graph',
         wrapper: wrapper,
         nodes: nodes,
         edges: edges,
@@ -173,6 +181,7 @@ async function handleGraphButton(): Promise<void> {
       });
     } else {
       showToast({
+        id: 'toast-container',
         message: `No path found between "${source}" and "${target}"`,
         theme: 'text-bg-warning',
       });
@@ -187,6 +196,7 @@ async function handleDwnButton(): Promise<void> {
     const { source, target } = getFormData();
     if (!source || !target) {
       showToast({
+        id: 'toast-container',
         message: 'Enter both source and target',
         theme: 'text-bg-warning',
       });
@@ -199,6 +209,7 @@ async function handleDwnButton(): Promise<void> {
       downloadJSON(data, `${source}_${target}.json`);
     } else {
       showToast({
+        id: 'toast-container',
         message: `No path found between "${source}" and "${target}"`,
         theme: 'text-bg-warning',
       });
@@ -213,55 +224,61 @@ function getFormData(): {
   target: string;
   skip: number;
   limit: number;
+  solverTestCoefficient: number;
 } {
-  const source = getInputValue('source-input');
-  const target = getInputValue('target-input');
-  const skip = parseInt(getInputValue('skip-input')) || 0;
-  const limit = parseInt(getInputValue('limit-input')) || 1;
-  return { source, target, skip, limit };
+  const source = getInputValue('sourceInput');
+  const target = getInputValue('targetInput');
+  const skip = parseInt(getInputValue('skipInput')) || 0;
+  const limit = parseInt(getInputValue('limitInput')) || 1;
+  const solverTestCoefficient =
+    parseFloat(getInputValue('solverTestCoefficientInput')) || 1;
+  return { source, target, skip, limit, solverTestCoefficient };
 }
 
 (function listeners() {
-  setupGraphButton(handleGraphButton);
+  const graphBtn = setupButton('graphBtn', async () => {
+    clearGraph(wrapper);
+    clearToasts();
+    await handleGraphButton();
+  });
 
-  const randBtn = document.getElementById(
-    'random-button'
-  ) as HTMLButtonElement | null;
-  if (!randBtn) {
-    console.error('randBtn not found');
-    return;
+  if (getRequestParam('fetch') === 'true') {
+    graphBtn!.click();
   }
-  randBtn.addEventListener('click', async () => {
+
+  setupButton('randomBtn', async () => {
     clearGraph(wrapper);
     clearToasts();
     await handleRandomButton();
   });
 
-  const reverseBtn = document.getElementById(
-    'reverse-button'
-  ) as HTMLButtonElement | null;
-  if (!reverseBtn) {
-    console.error('reverseBtn not found');
-    return;
-  }
-  reverseBtn.addEventListener('click', () =>
+  setupButton('reverseBtn', async () => {
     reverseInputs({
-      sourceInputId: 'source-input',
-      targetInputId: 'target-input',
-    })
-  );
+      sourceInputId: 'sourceInput',
+      targetInputId: 'targetInput',
+    });
+  });
 
-  setupDownloadButton(handleDwnButton);
+  setupButton('downloadBtn', async () => {
+    clearToasts();
+    await handleDwnButton();
+  });
 
-  setupClearButton([
-    'source-input',
-    'target-input',
-    'skip-input',
-    'limit-input',
-  ]);
+  setupButton('clearBtn', async () => {
+    history.pushState(null, '', '/');
+    clearForm([
+      'sourceInput',
+      'targetInput',
+      'skipInput',
+      'limitInput',
+      'solverTestCoefficientInput',
+    ]);
+    clearGraph(wrapper);
+    clearToasts();
+  });
 
-  setupNumericInput('skip-input', '0');
-  setupNumericInput('limit-input', '5');
+  setupNumericInput('skipInput', '0');
+  setupNumericInput('limitInput', '5');
 
   const hierarchicalCheckbox = document.getElementById(
     'hierarchical-checkbox'
@@ -286,9 +303,15 @@ function getFormData(): {
     toggleSelect({ id: 'direction-select', enabled: isHierarchical });
   });
 
-  setupSearchAutoComplete('source-input');
-  setupSearchAutoComplete('target-input');
+  // setupButton('dwnGraphBtn', async () => {
+  //   exportVisNetworkImage('graph');
+  // });
+
+  setupSearchAutoComplete('sourceInput');
+  setupSearchAutoComplete('targetInput');
 
   initPopovers();
   initTooltips();
+
+  refitGraphOnResize();
 })();

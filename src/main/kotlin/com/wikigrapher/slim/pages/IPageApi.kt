@@ -1,6 +1,5 @@
 package com.wikigrapher.slim.pages
 
-import com.wikigrapher.slim.NodeDto
 import com.wikigrapher.slim.NodeSubDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.ArraySchema
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import reactor.core.publisher.Flux
 
-@Tag(name = "page", description = "page operations")
+@Tag(name = "page", description = "page nodes operations")
 @RequestMapping(value = ["/api/core"], produces = [MediaType.APPLICATION_JSON_VALUE])
 interface IPageApi {
     @GetMapping("/page/random")

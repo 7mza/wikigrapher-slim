@@ -19,7 +19,7 @@ interface IMetaApi {
     @GetMapping("/meta/dump")
     @Operation(
         summary = "get current dump metadata",
-        description = "TODO",
+        description = "date, url & total count of nodes/relations",
     )
     @ApiResponses(
         value = [

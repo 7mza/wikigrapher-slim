@@ -25,8 +25,8 @@ import reactor.core.publisher.Mono
 interface IPathApi {
     @GetMapping("/path/length")
     @Operation(
-        summary = "find shortest path length between two nodes",
-        description = "TODO",
+        summary = "get shortest path length between two nodes",
+        description = "",
     )
     @ApiResponses(
         value = [
@@ -71,8 +71,8 @@ interface IPathApi {
 
     @GetMapping("/path")
     @Operation(
-        summary = "find shortest path between two nodes",
-        description = "TODO",
+        summary = "get shortest path between two nodes",
+        description = "",
     )
     @ApiResponses(
         value = [
@@ -173,8 +173,8 @@ interface IPathApi {
 
     @GetMapping("/path/random")
     @Operation(
-        summary = "get shortest path between two random page nodes",
-        description = "TODO",
+        summary = "get random shortest path between two random nodes",
+        description = "",
     )
     @ApiResponses(
         value = [
@@ -256,8 +256,8 @@ interface IPathApi {
 
     @GetMapping("/paths")
     @Operation(
-        summary = "find N paginated shortest paths between two nodes",
-        description = "TODO",
+        summary = "get N paginated shortest paths between two nodes",
+        description = "",
     )
     @ApiResponses(
         value = [
@@ -366,8 +366,8 @@ interface IPathApi {
 
     @GetMapping("/paths/all")
     @Operation(
-        summary = "find all shortest paths between two nodes",
-        description = "TODO",
+        summary = "get all shortest paths between two nodes",
+        description = "",
     )
     @ApiResponses(
         value = [

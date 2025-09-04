@@ -3,6 +3,7 @@ clients:
     host: localhost
     port:
     proto: http
+    access-token:
   wikipedia-web:
     host: localhost
     port:

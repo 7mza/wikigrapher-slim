@@ -3,6 +3,7 @@ import '../scss/styles.scss';
 import { Modal, Popover, Toast, Tooltip } from 'bootstrap';
 import { Network, Options } from 'vis-network/peer';
 import { DataSet } from 'vis-data/peer';
+import { saveAs } from 'file-saver';
 
 export { DataSet };
 
@@ -154,7 +155,7 @@ export async function fetchData<T>(url: string): Promise<T | null> {
     }
     if (!response.ok) {
       throw new FetchError({
-        message: body?.message || 'Request failed',
+        message: body?.message || 'request failed',
         status: response.status,
         statusText: response.statusText,
         url: response.url,
@@ -165,15 +166,15 @@ export async function fetchData<T>(url: string): Promise<T | null> {
     return body as T;
   } catch (error) {
     if (error instanceof FetchError) {
-      if (error.status === 429) {
-        showToast({ message: 'Too many requests. Please try again later.' });
-      } else {
-        showToast({
-          message: `error: ${error.status}<br/>code: ${error.code}<br/>message: ${error.message}<br/> url: ${error.url}`,
-        });
-      }
+      showToast({
+        id: 'toast-container',
+        message: `error: ${error.status}<br/>code: ${error.code}<br/>message: ${error.message}<br/> url: ${error.url}`,
+      });
     } else {
-      showToast({ message: 'An unexpected error occurred. Please try again.' });
+      showToast({
+        id: 'toast-container',
+        message: 'an unexpected error occurred',
+      });
     }
     throw error;
   }
@@ -181,28 +182,30 @@ export async function fetchData<T>(url: string): Promise<T | null> {
 
 export async function fetchWithUI<T>(url: string): Promise<T | null> {
   try {
-    toggleSpinner({ show: true });
-    setButtonState({ id: 'graph-button', enabled: false });
-    setButtonState({ id: 'random-button', enabled: false });
-    setButtonState({ id: 'download-button', enabled: false });
-    setButtonState({ id: 'clear-button', enabled: false });
+    toggleSpinner({ id: 'spinner', show: true });
+    setButtonState({ id: 'graphBtn', enabled: false });
+    setButtonState({ id: 'randomBtn', enabled: false });
+    setButtonState({ id: 'downloadBtn', enabled: false });
+    setButtonState({ id: 'clearBtn', enabled: false });
     return await fetchData<T>(url);
   } finally {
-    toggleSpinner({ show: false });
-    setButtonState({ id: 'graph-button' });
-    setButtonState({ id: 'random-button' });
-    setButtonState({ id: 'download-button' });
-    setButtonState({ id: 'clear-button' });
+    toggleSpinner({ id: 'spinner', show: false });
+    setButtonState({ id: 'graphBtn' });
+    setButtonState({ id: 'randomBtn' });
+    setButtonState({ id: 'downloadBtn' });
+    setButtonState({ id: 'clearBtn' });
   }
 }
 
 export async function renderNetwork({
+  id,
   wrapper,
   nodes,
   edges,
   options,
   focusNodeId = null,
 }: {
+  id: string;
   wrapper: NetworkWrapper;
   nodes: DataSet<Node>;
   edges: DataSet<Edge>;
@@ -210,13 +213,13 @@ export async function renderNetwork({
   focusNodeId?: string | number | null;
 }): Promise<void> {
   clearGraph(wrapper);
-  toggleSpinner({ show: true, message: 'plotting' });
-  setButtonState({ id: 'graph-button', enabled: false });
-  setButtonState({ id: 'random-button', enabled: false });
-  setButtonState({ id: 'clear-button', enabled: false });
-  const container = document.getElementById('graph') as HTMLElement | null;
+  toggleSpinner({ id: 'spinner', show: true, message: 'plotting' });
+  setButtonState({ id: 'graphBtn', enabled: false });
+  setButtonState({ id: 'randomBtn', enabled: false });
+  setButtonState({ id: 'clearBtn', enabled: false });
+  const container = document.getElementById(id) as HTMLElement | null;
   if (!container) {
-    console.error(`graph container not found`);
+    console.error(`graph #${id} container not found`);
     return;
   }
   wrapper.network = new Network(
@@ -251,10 +254,10 @@ export async function renderNetwork({
     }
   });
   wrapper.network.once('afterDrawing', () => {
-    toggleSpinner({ show: false });
-    setButtonState({ id: 'graph-button' });
-    setButtonState({ id: 'random-button' });
-    setButtonState({ id: 'clear-button' });
+    toggleSpinner({ id: 'spinner', show: false });
+    setButtonState({ id: 'graphBtn' });
+    setButtonState({ id: 'randomBtn' });
+    setButtonState({ id: 'clearBtn' });
     if (focusNodeId) {
       wrapper?.network?.focus(focusNodeId, {
         scale: 1.5,
@@ -268,17 +271,17 @@ export async function renderNetwork({
 }
 
 export function toggleSpinner({
+  id,
   show,
   message = 'fetching',
 }: {
+  id: string;
   show: boolean;
   message?: string | null;
 }): void {
-  const spinnerContainer = document.getElementById(
-    'spinner'
-  ) as HTMLElement | null;
+  const spinnerContainer = document.getElementById(id) as HTMLElement | null;
   if (!spinnerContainer) {
-    console.error('spinner container not found');
+    console.error(`spinner #${id} not found`);
     return;
   }
   spinnerContainer.innerHTML = '';
@@ -308,16 +311,18 @@ export function clearToasts(): void {
 }
 
 export function showToast({
+  id,
   message,
   theme = 'text-bg-danger',
 }: {
+  id: string;
   message: string;
   theme?: string | null;
 }): void {
   clearToasts();
-  const toastContainer = document.getElementById('toast-container');
+  const toastContainer = document.getElementById(id);
   if (!toastContainer) {
-    console.error('toast container not found');
+    console.error(`toast #${id} not found`);
     return;
   }
   const toast = document.createElement('div');
@@ -358,8 +363,7 @@ export function clearGraph(wrapper: NetworkWrapper): void {
 export function getInputValue(id: string): string {
   const input = document.getElementById(id) as HTMLInputElement | null;
   if (!input) {
-    console.error(`input ${id} not found!`);
-    throw new Error(`input ${id} not found!`);
+    throw new Error(`input #${id} not found!`);
   }
   return input.value.trim();
 }
@@ -373,7 +377,7 @@ export function setInputValue({
 }): void {
   const input = document.getElementById(id) as HTMLInputElement | null;
   if (!input) {
-    console.error(`input ${id} not found!`);
+    console.error(`input #${id} not found!`);
     return;
   }
   input.value = `${value}`;
@@ -401,8 +405,7 @@ export function reverseInputs({
 export function getCheckboxState(id: string): boolean {
   const checkbox = document.getElementById(id) as HTMLInputElement | null;
   if (!checkbox) {
-    console.error(`checkbox ${id} not found!`);
-    throw new Error(`checkbox ${id} not found!`);
+    throw new Error(`checkbox #${id} not found!`);
   }
   return checkbox.checked;
 }
@@ -416,7 +419,7 @@ export function toggleSelect({
 }): void {
   const select = document.getElementById(id) as HTMLSelectElement | null;
   if (!select) {
-    console.error(`select ${id} not found!`);
+    console.error(`select #${id} not found!`);
     return;
   }
   select.disabled = !enabled;
@@ -431,7 +434,7 @@ export function setButtonState({
 }): void {
   const button = document.getElementById(id) as HTMLButtonElement | null;
   if (!button) {
-    console.error(`btn ${id} not found`);
+    console.error(`btn #${id} not found`);
     return;
   }
   button.disabled = !enabled;
@@ -536,6 +539,7 @@ export function getNetworkOptions({
       },
       color: {
         color: '#848484',
+        highlight: '#ff0000',
         opacity: 0.8,
       },
       smooth: {
@@ -618,17 +622,6 @@ export function getNetworkOptions({
   };
 }
 
-export function downloadJSON(obj: object, filename: string): void {
-  const json = JSON.stringify(obj, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 export function initTooltips(): Tooltip[] {
   const elements: NodeListOf<Element> = document.querySelectorAll(
     '[data-bs-toggle="tooltip"]'
@@ -659,13 +652,13 @@ export function setupNumericInput(
     elementId
   ) as HTMLInputElement | null;
   if (!inputElement) {
-    console.error(`${elementId} not found`);
+    console.error(`input #${elementId} not found`);
     return;
   }
   inputElement.addEventListener('input', (event) => {
     const target = event.target as HTMLInputElement | null;
     if (!target) {
-      console.error(`${elementId} target not found`);
+      console.error(`input #${elementId} target not found`);
       return;
     }
     if (/[^0-9.]/.test(target.value)) {
@@ -679,70 +672,36 @@ export function safeDecodeURIComponent(str: string) {
   try {
     return decodeURIComponent(sanitized);
   } catch {
-    console.error(`${str} can't be decoded`);
+    console.error(`uri component ${str} can't be decoded`);
     return str;
   }
 }
 
-export function setupGraphButton(
+export function setupButton(
+  id: string,
   handler: () => Promise<void>
 ): HTMLButtonElement | null {
-  const graphBtn = document.getElementById(
-    'graph-button'
-  ) as HTMLButtonElement | null;
-  if (!graphBtn) {
-    console.error('graphBtn not found');
+  const btn = document.getElementById(id) as HTMLButtonElement | null;
+  if (!btn) {
+    console.error(`btn #${id} not found`);
     return null;
   }
-  graphBtn.addEventListener('click', async () => {
-    clearGraph(wrapper);
-    clearToasts();
+  btn.addEventListener('click', async () => {
     await handler();
   });
-  return graphBtn;
-}
-
-export function setupDownloadButton(handler: () => Promise<void>): void {
-  const dwnBtn = document.getElementById(
-    'download-button'
-  ) as HTMLButtonElement | null;
-  if (!dwnBtn) {
-    console.error('dwnBtn not found');
-    return;
-  }
-  dwnBtn.addEventListener('click', async () => {
-    clearToasts();
-    await handler();
-  });
-}
-
-export function setupClearButton(formFieldIds: string[]): void {
-  const clearBtn = document.getElementById(
-    'clear-button'
-  ) as HTMLButtonElement | null;
-  if (!clearBtn) {
-    console.error(`clearBtn not found`);
-    return;
-  }
-  clearBtn.addEventListener('click', () => {
-    clearForm(formFieldIds);
-    clearGraph(wrapper);
-    clearToasts();
-  });
+  return btn;
 }
 
 export function setupSearchAutoComplete(id: string) {
   const input = document.getElementById(id) as HTMLInputElement | null;
   if (!input) {
-    console.error(`input ${id} not found!`);
-    throw new Error(`input ${id} not found!`);
+    throw new Error(`input #${id} not found!`);
   }
   const dropdown = document.getElementById(
     `${id}-dropdown`
   ) as HTMLInputElement | null;
   if (!dropdown) {
-    console.error(`input ${id} not found!`);
-    throw new Error(`input ${id} not found!`);
+    throw new Error(`input #${id} not found!`);
   }
   let activeIndex = -1;
   input.addEventListener(
@@ -856,4 +815,70 @@ export function setupSearchAutoComplete(id: string) {
       t = window.setTimeout(() => fn(...args), wait);
     };
   }
+}
+
+function getRequestParams(): URLSearchParams {
+  return new URLSearchParams(window.location.search);
+}
+
+export function getRequestParam(param: string): string | null {
+  return getRequestParams().get(param);
+}
+
+export function refitGraphOnResize() {
+  window.addEventListener('resize', () => {
+    if (wrapper.network) {
+      wrapper.network.redraw();
+      wrapper.network.fit();
+    }
+  });
+}
+
+export function downloadJSON(obj: object, filename: string): void {
+  const json = JSON.stringify(obj, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  saveAs(blob, filename);
+}
+
+export function downloadPNG(canvas: HTMLCanvasElement, filename: string): void {
+  canvas.toBlob(
+    (blob) => {
+      if (!blob) {
+        console.error('failed to convert canvas to blob');
+        return;
+      }
+      saveAs(blob, filename);
+    },
+    'image/png',
+    1
+  );
+}
+
+function scaleCanvasForExport(
+  originalCanvas: HTMLCanvasElement
+): HTMLCanvasElement {
+  const dpr = window.devicePixelRatio || 1;
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = originalCanvas.width * dpr;
+  exportCanvas.height = originalCanvas.height * dpr;
+  const ctx = exportCanvas.getContext('2d');
+  if (!ctx) throw new Error('failed to get 2D context from canvas');
+  ctx.scale(dpr, dpr);
+  ctx.drawImage(originalCanvas, 0, 0);
+  return exportCanvas;
+}
+
+export function exportVisNetworkImage(id: string): void {
+  const container = document.getElementById(id) as HTMLElement | null;
+  if (!container) {
+    console.error(`graph #${id} not found`);
+    return;
+  }
+  const canvas = container.querySelector('canvas');
+  if (!canvas) {
+    console.warn('no canvas found inside graph container');
+    return;
+  }
+  const scaledCanvas = scaleCanvasForExport(canvas as HTMLCanvasElement);
+  downloadPNG(scaledCanvas, 'network-image.png');
 }

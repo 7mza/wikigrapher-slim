@@ -13,25 +13,25 @@
           ></span>
           <input
             class="form-control"
-            id="source-input"
+            id="sourceInput"
             data-bs-delay='{"show":1000,"hide":150}'
             data-bs-placement="bottom"
-            data-bs-title="Source node"
+            data-bs-title="source node title"
             data-bs-toggle="tooltip"
-            placeholder="Source node"
+            placeholder="source node title"
             type="text"
             th:value="${source}" />
           <ul
             class="dropdown-menu w-100 position-absolute top-100 start-0 mt-1"
-            id="source-input-dropdown"></ul>
+            id="sourceInput-dropdown"></ul>
         </div>
         <div class="input-group">
           <button
-            class="btn"
-            id="reverse-button"
+            class="btn btn-sm btn-outline-dark"
+            id="reverseBtn"
             data-bs-delay='{"show":1000,"hide":150}'
             data-bs-placement="bottom"
-            data-bs-title="Reverse source & target"
+            data-bs-title="flip source & target titles"
             data-bs-toggle="tooltip">
             <i class="bi bi bi-arrow-down-up"></i>
           </button>
@@ -42,48 +42,22 @@
           ></span>
           <input
             class="form-control"
-            id="target-input"
+            id="targetInput"
             data-bs-delay='{"show":1000,"hide":150}'
             data-bs-placement="bottom"
-            data-bs-title="Target node"
+            data-bs-title="target node title"
             data-bs-toggle="tooltip"
-            placeholder="Target node"
+            placeholder="target node title"
             type="text"
             th:value="${target}" />
           <ul
             class="dropdown-menu w-100 position-absolute top-100 start-0 mt-1"
-            id="target-input-dropdown"></ul>
+            id="targetInput-dropdown"></ul>
         </div>
       </div>
       <div class="row g-3 align-items-center mb-3">
         <div
           th:replace="~{fragments/pagination_control :: pagination_control}"></div>
-      </div>
-      <div class="row g-3 align-items-center mb-3">
-        <div class="col-auto">
-          <div class="input-group">
-            <span class="input-group-text">solver</span>
-            <select
-              class="form-select"
-              id="solver-select"
-              aria-label="solver"
-              data-bs-delay='{"show":1000,"hide":150}'
-              data-bs-placement="bottom"
-              data-bs-title="vis network solver"
-              data-bs-toggle="tooltip">
-              <option
-                selected
-                value="barnesHut">
-                barnesHut
-              </option>
-              <option value="repulsion">repulsion</option>
-              <option value="hierarchicalRepulsion">
-                hierarchicalRepulsion
-              </option>
-              <option value="forceAtlas2Based">forceAtlas2Based</option>
-            </select>
-          </div>
-        </div>
       </div>
       <div class="row g-3 align-items-center mb-3">
         <div class="col-auto">
@@ -132,12 +106,38 @@
       </div>
       <div class="row g-3 align-items-center mb-3">
         <div class="col-auto">
+          <div class="input-group">
+            <span class="input-group-text">solver</span>
+            <select
+              class="form-select"
+              id="solver-select"
+              aria-label="solver"
+              data-bs-delay='{"show":1000,"hide":150}'
+              data-bs-placement="bottom"
+              data-bs-title="vis network solver"
+              data-bs-toggle="tooltip">
+              <option
+                selected
+                value="barnesHut">
+                barnesHut
+              </option>
+              <option value="repulsion">repulsion</option>
+              <option value="hierarchicalRepulsion">
+                hierarchicalRepulsion
+              </option>
+              <option value="forceAtlas2Based">forceAtlas2Based</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3 align-items-center mb-3">
+        <div class="col-auto">
           <button
             class="btn btn-outline-dark bi bi-gear-fill"
-            id="graph-button"
+            id="graphBtn"
             data-bs-delay='{"show":1000,"hide":150}'
             data-bs-placement="bottom"
-            data-bs-title="Fetch & plot path between source & target"
+            data-bs-title="fetch & plot paths between source & target"
             data-bs-toggle="tooltip">
             plot
           </button>
@@ -145,10 +145,10 @@
         <div class="col-auto">
           <button
             class="btn btn-outline-dark bi bi-shuffle"
-            id="random-button"
+            id="randomBtn"
             data-bs-delay='{"show":1000,"hide":150}'
             data-bs-placement="bottom"
-            data-bs-title="Fetch & plot path between random source & random target"
+            data-bs-title="fetch & plot path between random source & random target"
             data-bs-toggle="tooltip">
             random
           </button>
@@ -156,7 +156,7 @@
         <div class="col-auto">
           <button
             class="btn btn-outline-dark bi bi-cloud-arrow-down-fill"
-            id="download-button"
+            id="downloadBtn"
             data-bs-delay='{"show":1000,"hide":100}'
             data-bs-placement="bottom"
             data-bs-title="download all paths between source & target"
@@ -167,7 +167,7 @@
         <div class="col-auto">
           <button
             class="btn btn-outline-dark bi bi-x-lg"
-            id="clear-button">
+            id="clearBtn">
             clear
           </button>
         </div>

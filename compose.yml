@@ -9,7 +9,8 @@ services:
       - SPRING_PROFILES_ACTIVE=default, docker
       - NEO4J_PASSWORD=${NEO4J_PASSWORD}
       - NEO4J_USERNAME=${NEO4J_USERNAME}
-      - JAVA_OPTS=-Xms512m -Xmx768m -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+UseCompressedOops
+      - WIKIPEDIA_API_ACCESS_TOKEN=${WIKIPEDIA_API_ACCESS_TOKEN}
+      - JAVA_OPTS=-Xms512m -Xmx768m -XX:+UseZGC -XX:+ZGenerational -XX:+UseStringDeduplication -XX:+UseCompressedOops
     depends_on:
       neo4j:
         condition: service_healthy

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.info.Info
 import jakarta.annotation.PreDestroy
+import org.apache.commons.lang3.RandomStringUtils
 import org.neo4j.cypherdsl.core.renderer.Dialect
 import org.neo4j.driver.Driver
 import org.slf4j.LoggerFactory
@@ -28,7 +29,6 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
-import java.io.InputStream
 import java.nio.charset.StandardCharsets
 
 @Configuration
@@ -74,6 +74,8 @@ class DefaultConfigs {
         logger.debug("wikipedia api baseUrl: {}", baseUrl)
         return builder
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader("Api-User-Agent", RandomStringUtils.secure().nextAlphabetic(5))
+            .defaultHeader("Authorization", clientsProperties.wikipediaApi!!.accessToken)
             .baseUrl(baseUrl)
             .build()
     }
@@ -114,6 +116,7 @@ class ClientsProperties {
         var host: String? = null,
         var port: String? = null,
         var proto: String? = null,
+        var accessToken: String? = null,
     ) {
         fun getBaseUrl() = "$proto://$host" + if (port.isNullOrBlank().not()) ":$port" else ""
     }
@@ -186,12 +189,6 @@ class ReactiveFileReader(
     ): Mono<String> =
         readFileAsBytes(path, bufferSize)
             .map { String(it, StandardCharsets.UTF_8) }
-
-    fun readFileAsInputStream(path: String): Mono<InputStream> =
-        Mono
-            .fromCallable {
-                resourceLoader.getResource(path).inputStream
-            }.subscribeOn(Schedulers.boundedElastic())
 
     private fun readFully(
         resource: Resource,
