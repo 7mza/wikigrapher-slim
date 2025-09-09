@@ -7,9 +7,23 @@ import reactor.core.publisher.Mono
 
 @Transactional(readOnly = true)
 interface ICategoryRepository : ReactiveNeo4jRepository<Category, String> {
-    @Query("match (source:category) RETURN count(source)")
+    @Query(
+// @formatter:off
+"""
+MATCH (source:category)
+RETURN count(source)
+""",
+// @formatter:on
+    )
     fun countCategories(): Mono<Long>
 
-    @Query("match ()-[r:contains]->() RETURN count(r)")
+    @Query(
+// @formatter:off
+"""
+MATCH ()-[r:contains]->()
+RETURN count(r)
+""",
+// @formatter:on
+    )
     fun countContains(): Mono<Long>
 }

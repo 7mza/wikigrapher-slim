@@ -7,6 +7,13 @@ import reactor.core.publisher.Mono
 
 @Transactional(readOnly = true)
 interface IOrphanRepository : ReactiveNeo4jRepository<Orphan, String> {
-    @Query("match (orphan:orphan) RETURN count(orphan)")
+    @Query(
+// @formatter:off
+"""
+MATCH (orphan:orphan)
+RETURN count(orphan)
+""",
+// @formatter:on
+    )
     fun countOrphans(): Mono<Long>
 }

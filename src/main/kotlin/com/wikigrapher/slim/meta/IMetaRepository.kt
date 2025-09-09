@@ -7,6 +7,13 @@ import reactor.core.publisher.Mono
 
 @Transactional(readOnly = true)
 interface IMetaRepository : ReactiveNeo4jRepository<Meta, String> {
-    @Query($$"MATCH (source:meta {property: $property}) RETURN source")
+    @Query(
+// @formatter:off
+        $$"""
+MATCH (source:meta {property: $property})
+RETURN source
+""",
+// @formatter:on
+    )
     fun findMetaByProperty(property: String): Mono<MetaProjection>
 }

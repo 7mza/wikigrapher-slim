@@ -10,12 +10,26 @@ import reactor.core.publisher.Mono
 interface IPageRepository : ReactiveNeo4jRepository<Page, String> {
     fun existsByTitle(title: String): Mono<Boolean>
 
-    @Query($$"MATCH (source:page) WITH source, rand() AS rnd ORDER BY rnd LIMIT $n RETURN source")
+    @Query(
+// @formatter:off
+        $$"""
+MATCH (source:page)
+WITH source, rand() AS rnd
+ORDER BY rnd
+LIMIT $n
+RETURN source
+""",
+// @formatter:on
+    )
     fun getNRandomPages(n: Int): Flux<PageProjection>
 
     @Query(
-        $$"MATCH path = shortestPath((source:page {title: $sourceTitle})-[:link_to|redirect_to*1..100]->" +
-            $$"(target:page|redirect {title: $targetTitle})) RETURN path",
+// @formatter:off
+        $$"""
+MATCH path = shortestPath((source:page {title: $sourceTitle})-[:link_to|redirect_to*1..100]->(target:page|redirect {title: $targetTitle}))
+RETURN path
+""",
+// @formatter:on
     )
     fun shortestPath(
         sourceTitle: String,
@@ -23,8 +37,12 @@ interface IPageRepository : ReactiveNeo4jRepository<Page, String> {
     ): Mono<PageProjection>
 
     @Query(
-        $$"MATCH path = shortestPath((source:page {title: $sourceTitle})-[:link_to|redirect_to*1..100]->" +
-            $$"(target:page|redirect {title: $targetTitle})) RETURN length(path)",
+// @formatter:off
+        $$"""
+MATCH path = shortestPath((source:page {title: $sourceTitle})-[:link_to|redirect_to*1..100]->(target:page|redirect {title: $targetTitle}))
+RETURN length(path)
+""",
+// @formatter:on
     )
     fun shortestPathLength(
         sourceTitle: String,
@@ -32,8 +50,32 @@ interface IPageRepository : ReactiveNeo4jRepository<Page, String> {
     ): Mono<Int>
 
     @Query(
-        $$"MATCH path = allShortestPaths((source:page {title: $sourceTitle})-[:link_to|redirect_to*1..100]->" +
-            $$"(target:page|redirect {title: $targetTitle})) RETURN COLLECT(path)",
+// @formatter:off
+        $$"""
+MATCH (source:page {title: $sourceTitle})
+MATCH (target:page|redirect {title: $targetTitle})
+OPTIONAL MATCH (redirects:redirect)-[:redirect_to]->(target)
+CALL (source, target) {
+  MATCH path = SHORTESTPATH((source)-[:link_to|redirect_to*1..100]->(target))
+  RETURN length(path) AS len
+}
+CALL
+  apoc.cypher.run(
+    "CALL (source, target, len, redirects) {
+      MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(target))
+      RETURN paths
+      UNION
+      OPTIONAL MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(redirects))
+      RETURN paths
+    }
+    RETURN paths",
+    {source: source, target: target, len:len, redirects:redirects}
+  )
+YIELD value
+WITH DISTINCT value.paths AS paths
+RETURN COLLECT(paths)
+""",
+// @formatter:on
     )
     fun shortestPaths(
         sourceTitle: String,
@@ -41,8 +83,33 @@ interface IPageRepository : ReactiveNeo4jRepository<Page, String> {
     ): Mono<PageProjection>
 
     @Query(
-        $$"MATCH path = allShortestPaths((source:page {title: $sourceTitle})-[:link_to|redirect_to*1..100]->" +
-            $$"(target:page|redirect {title: $targetTitle})) WITH path SKIP $skip LIMIT $limit RETURN COLLECT(path)",
+// @formatter:off
+        $$"""
+MATCH (source:page {title: $sourceTitle})
+MATCH (target:page|redirect {title: $targetTitle})
+OPTIONAL MATCH (redirects:redirect)-[:redirect_to]->(target)
+CALL (source, target) {
+  MATCH path = SHORTESTPATH((source)-[:link_to|redirect_to*1..100]->(target))
+  RETURN length(path) AS len
+}
+CALL
+  apoc.cypher.run(
+    "CALL (source, target, len, redirects) {
+      MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(target))
+      RETURN paths
+      UNION
+      OPTIONAL MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(redirects))
+      RETURN paths
+    }
+    RETURN paths",
+    {source: source, target: target, len:len, redirects:redirects}
+  )
+YIELD value
+WITH DISTINCT value.paths AS paths
+SKIP $skip LIMIT $limit
+RETURN COLLECT(paths)
+""",
+// @formatter:on
     )
     fun shortestPaths(
         sourceTitle: String,
@@ -51,9 +118,23 @@ interface IPageRepository : ReactiveNeo4jRepository<Page, String> {
         limit: Int,
     ): Mono<PageProjection>
 
-    @Query("match (source:page) RETURN count(source)")
+    @Query(
+// @formatter:off
+"""
+MATCH (source:page)
+RETURN count(source)
+""",
+// @formatter:on
+    )
     fun countPages(): Mono<Long>
 
-    @Query("match ()-[r:link_to]->() RETURN count(r)")
+    @Query(
+// @formatter:off
+"""
+MATCH ()-[r:link_to]->()
+RETURN count(r)
+""",
+// @formatter:on
+    )
     fun countLinkTo(): Mono<Long>
 }

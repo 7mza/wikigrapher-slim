@@ -43,7 +43,7 @@ val htmlunitVersion = "4.14.0"
 val mockitoAgent = configurations.create("mockitoAgent")
 val mockitoCoreVersion = "5.19.0"
 val mockitoKotlinVersion = "6.0.0"
-val openapiVersion = "2.8.10"
+val openapiVersion = "2.8.13"
 val springCloudVersion = "2025.0.0"
 
 dependencies {

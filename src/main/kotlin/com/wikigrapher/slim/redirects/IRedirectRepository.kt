@@ -10,8 +10,12 @@ interface IRedirectRepository : ReactiveNeo4jRepository<Redirect, String> {
     fun existsByTitle(title: String): Mono<Boolean>
 
     @Query(
-        $$"MATCH path = shortestPath((source:redirect {title: $sourceTitle})-[:link_to|redirect_to*1..100]->" +
-            $$"(target:page|redirect {title: $targetTitle})) RETURN path",
+// @formatter:off
+        $$"""
+MATCH path = shortestPath((source:redirect {title: $sourceTitle})-[:link_to|redirect_to*1..100]->(target:page|redirect {title: $targetTitle}))
+RETURN path
+""",
+// @formatter:on
     )
     fun shortestPath(
         sourceTitle: String,
@@ -19,8 +23,12 @@ interface IRedirectRepository : ReactiveNeo4jRepository<Redirect, String> {
     ): Mono<RedirectProjection>
 
     @Query(
-        $$"MATCH path = shortestPath((source:redirect {title: $sourceTitle})-[:link_to|redirect_to*1..100]->" +
-            $$"(target:page|redirect {title: $targetTitle})) RETURN length(path)",
+// @formatter:off
+        $$"""
+MATCH path = shortestPath((source:redirect {title: $sourceTitle})-[:link_to|redirect_to*1..100]->(target:page|redirect {title: $targetTitle}))
+RETURN length(path)
+""",
+// @formatter:on
     )
     fun shortestPathLength(
         sourceTitle: String,
@@ -28,8 +36,32 @@ interface IRedirectRepository : ReactiveNeo4jRepository<Redirect, String> {
     ): Mono<Int>
 
     @Query(
-        $$"MATCH path = allShortestPaths((source:redirect {title: $sourceTitle})-[:link_to|redirect_to*1..100]->" +
-            $$"(target:page|redirect {title: $targetTitle})) RETURN COLLECT(path)",
+// @formatter:off
+        $$"""
+MATCH (source:redirect {title: $sourceTitle})
+MATCH (target:page|redirect {title: $targetTitle})
+OPTIONAL MATCH (redirects:redirect)-[:redirect_to]->(target)
+CALL (source, target) {
+  MATCH path = SHORTESTPATH((source)-[:link_to|redirect_to*1..100]->(target))
+  RETURN length(path) AS len
+}
+CALL
+  apoc.cypher.run(
+    "CALL (source, target, len, redirects) {
+      MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(target))
+      RETURN paths
+      UNION
+      OPTIONAL MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(redirects))
+      RETURN paths
+    }
+    RETURN paths",
+    {source: source, target: target, len:len, redirects:redirects}
+  )
+YIELD value
+WITH DISTINCT value.paths AS paths
+RETURN COLLECT(paths)
+""",
+// @formatter:on
     )
     fun shortestPaths(
         sourceTitle: String,
@@ -37,8 +69,33 @@ interface IRedirectRepository : ReactiveNeo4jRepository<Redirect, String> {
     ): Mono<RedirectProjection>
 
     @Query(
-        $$"MATCH path = allShortestPaths((source:redirect {title: $sourceTitle})-[:link_to|redirect_to*1..100]->" +
-            $$"(target:page|redirect {title: $targetTitle})) WITH path SKIP $skip LIMIT $limit RETURN COLLECT(path)",
+// @formatter:off
+        $$"""
+MATCH (source:redirect {title: $sourceTitle})
+MATCH (target:page|redirect {title: $targetTitle})
+OPTIONAL MATCH (redirects:redirect)-[:redirect_to]->(target)
+CALL (source, target) {
+  MATCH path = SHORTESTPATH((source)-[:link_to|redirect_to*1..100]->(target))
+  RETURN length(path) AS len
+}
+CALL
+  apoc.cypher.run(
+    "CALL (source, target, len, redirects) {
+      MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(target))
+      RETURN paths
+      UNION
+      OPTIONAL MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(redirects))
+      RETURN paths
+    }
+    RETURN paths",
+    {source: source, target: target, len:len, redirects:redirects}
+  )
+YIELD value
+WITH DISTINCT value.paths AS paths
+SKIP $skip LIMIT $limit
+RETURN COLLECT(paths)
+""",
+// @formatter:on
     )
     fun shortestPaths(
         sourceTitle: String,
@@ -47,9 +104,23 @@ interface IRedirectRepository : ReactiveNeo4jRepository<Redirect, String> {
         limit: Int,
     ): Mono<RedirectProjection>
 
-    @Query("match (source:redirect) RETURN count(source)")
+    @Query(
+// @formatter:off
+"""
+MATCH (source:redirect)
+RETURN count(source)
+""",
+// @formatter:on
+    )
     fun countRedirects(): Mono<Long>
 
-    @Query("match ()-[r:redirect_to]->() RETURN count(r)")
+    @Query(
+// @formatter:off
+"""
+MATCH ()-[r:redirect_to]->()
+RETURN count(r)
+""",
+// @formatter:on
+    )
     fun countRedirectTo(): Mono<Long>
 }
