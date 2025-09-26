@@ -5,17 +5,17 @@ import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import org.owasp.dependencycheck.reporting.ReportGenerator.Format.HTML
 
 plugins {
-    kotlin("jvm") version "2.2.10"
-    kotlin("plugin.spring") version "2.2.10"
-    id("org.springframework.boot") version "3.5.5"
+    kotlin("jvm") version "2.2.20"
+    kotlin("plugin.spring") version "2.2.20"
+    id("org.springframework.boot") version "3.5.6"
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("com.autonomousapps.dependency-analysis") version "3.0.1"
+    id("com.autonomousapps.dependency-analysis") version "3.0.4"
     id("com.bmuschko.docker-remote-api") version "9.4.0"
-    id("com.github.ben-manes.versions") version "0.52.0"
+    id("com.github.ben-manes.versions") version "0.53.0"
     id("com.github.node-gradle.node") version "7.1.0"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
-    id("org.owasp.dependencycheck") version "12.1.3"
+    id("org.owasp.dependencycheck") version "12.1.6"
     jacoco
 }
 
@@ -39,9 +39,9 @@ repositories {
 }
 
 val blockhoundVersion = "1.0.13.RELEASE"
-val htmlunitVersion = "4.14.0"
+val htmlunitVersion = "4.16.0"
 val mockitoAgent = configurations.create("mockitoAgent")
-val mockitoCoreVersion = "5.19.0"
+val mockitoCoreVersion = "5.20.0"
 val mockitoKotlinVersion = "6.0.0"
 val openapiVersion = "2.8.13"
 val springCloudVersion = "2025.0.0"
