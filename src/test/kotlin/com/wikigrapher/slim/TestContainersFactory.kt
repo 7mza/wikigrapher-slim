@@ -6,7 +6,7 @@ import org.testcontainers.utility.DockerImageName
 
 object TestContainersFactory {
     fun neo4jContainer(): Neo4jContainer<*> =
-        Neo4jContainer(DockerImageName.parse("neo4j:2025-community"))
+        Neo4jContainer(DockerImageName.parse("neo4j:community"))
             .withoutAuthentication()
             .withPlugins("apoc")
             .withNeo4jConfig("client.allow_telemetry", "false")
