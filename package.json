@@ -75,7 +75,9 @@
     "singleAttributePerLine": true
   },
   "browserslist": [
-    "defaults and fully supports es6-module",
+    ">0.3%",
+    "defaults",
+    "fully supports es6-module",
     "not dead"
   ]
 }

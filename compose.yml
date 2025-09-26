@@ -28,7 +28,7 @@ services:
       retries: 3
 
   neo4j:
-    image: neo4j:2025-community
+    image: neo4j:community
     mem_limit: 8g
     restart: unless-stopped
     ports:
