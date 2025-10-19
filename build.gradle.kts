@@ -10,12 +10,12 @@ plugins {
     id("org.springframework.boot") version "3.5.6"
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("com.autonomousapps.dependency-analysis") version "3.0.4"
+    id("com.autonomousapps.dependency-analysis") version "3.1.0"
     id("com.bmuschko.docker-remote-api") version "9.4.0"
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.github.node-gradle.node") version "7.1.0"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
-    id("org.owasp.dependencycheck") version "12.1.6"
+    id("org.owasp.dependencycheck") version "12.1.8"
     jacoco
 }
 
@@ -39,7 +39,7 @@ repositories {
 }
 
 val blockhoundVersion = "1.0.13.RELEASE"
-val htmlunitVersion = "4.16.0"
+val htmlunitVersion = "4.17.0"
 val mockitoAgent = configurations.create("mockitoAgent")
 val mockitoCoreVersion = "5.20.0"
 val mockitoKotlinVersion = "6.1.0"
