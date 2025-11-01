@@ -1,9 +1,9 @@
-FROM eclipse-temurin:25-jre-alpine AS builder
+FROM eclipse-temurin:24-jre-alpine AS builder
 WORKDIR /workspace
 COPY ./build/libs/*.jar app.jar
 RUN mkdir extracted
 RUN java -Djarmode=tools -jar app.jar extract --layers --destination extracted --launcher
-FROM eclipse-temurin:25-jre-alpine
+FROM eclipse-temurin:24-jre-alpine
 RUN apk update && apk upgrade && apk add curl jq && apk cache clean && rm -rf /var/cache/apk/*
 WORKDIR /application
 COPY --from=builder /workspace/extracted/dependencies/ ./
