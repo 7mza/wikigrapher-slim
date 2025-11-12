@@ -1,5 +1,7 @@
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.github.gradle.node.npm.task.NpmTask
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import org.owasp.dependencycheck.reporting.ReportGenerator.Format.HTML
@@ -14,8 +16,8 @@ plugins {
     id("com.bmuschko.docker-remote-api") version "10.0.0"
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.github.node-gradle.node") version "7.1.0"
-    id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
-    id("org.owasp.dependencycheck") version "12.1.8"
+    id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
+    id("org.owasp.dependencycheck") version "12.1.9"
     jacoco
 }
 
@@ -38,12 +40,12 @@ repositories {
     mavenCentral()
 }
 
-val blockhoundVersion = "1.0.13.RELEASE"
+val blockhoundVersion = "1.0.15.RELEASE"
 val htmlunitVersion = "4.18.0"
 val mockitoAgent = configurations.create("mockitoAgent")
 val mockitoCoreVersion = "5.20.0"
 val mockitoKotlinVersion = "6.1.0"
-val openapiVersion = "2.8.13"
+val openapiVersion = "2.8.14"
 val springCloudVersion = "2025.0.0"
 
 dependencies {
@@ -73,6 +75,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.springframework.cloud:spring-cloud-contract-wiremock")
+    // FIXME: https://github.com/testcontainers/testcontainers-java/issues/11212
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:neo4j")
 
@@ -110,6 +113,14 @@ tasks.withType<Test> {
     configure<JacocoTaskExtension> {
         excludes = listOf("org/htmlunit/**", "jdk.internal.*")
         isIncludeNoLocationClasses = true
+    }
+    testLogging {
+        events = setOf(FAILED)
+        exceptionFormat = FULL
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+        showStandardStreams = false
     }
 }
 
