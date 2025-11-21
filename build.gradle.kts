@@ -9,10 +9,10 @@ import org.owasp.dependencycheck.reporting.ReportGenerator.Format.HTML
 plugins {
     kotlin("jvm") version "2.2.21"
     kotlin("plugin.spring") version "2.2.21"
-    id("org.springframework.boot") version "3.5.7"
+    id("org.springframework.boot") version "3.5.8"
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("com.autonomousapps.dependency-analysis") version "3.4.1"
+    id("com.autonomousapps.dependency-analysis") version "3.5.0"
     id("com.bmuschko.docker-remote-api") version "10.0.0"
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.github.node-gradle.node") version "7.1.0"
@@ -90,7 +90,7 @@ dependencyManagement {
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs.addAll("-Xjsr305=strict")
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
     }
 }
 
@@ -156,7 +156,7 @@ configure<KtlintExtension> {
     coloredOutput.set(true)
     debug.set(true)
     verbose.set(true)
-    version.set("1.7.1")
+    version.set("1.8.0")
 }
 
 configure<DependencyCheckExtension> {

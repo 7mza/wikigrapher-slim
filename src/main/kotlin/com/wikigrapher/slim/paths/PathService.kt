@@ -57,8 +57,14 @@ class PathService
                     redirectRepository.existsByTitle(sourceTitle),
                 ).flatMap {
                     when {
-                        it.t1 -> Mono.just(TYPE.PAGE)
-                        it.t2 -> Mono.just(TYPE.REDIRECT)
+                        it.t1 -> {
+                            Mono.just(TYPE.PAGE)
+                        }
+
+                        it.t2 -> {
+                            Mono.just(TYPE.REDIRECT)
+                        }
+
                         else -> {
                             logger.error("getSourceType, node {} not found", sourceTitle)
                             Mono.empty()
@@ -92,13 +98,17 @@ class PathService
                 getSourceType(sourceTitle)
                     .flatMapMany { type ->
                         when (type) {
-                            TYPE.PAGE -> pageRepository.shortestPath(sourceTitle, targetTitle).map { it.toNode() }
-                            TYPE.REDIRECT ->
+                            TYPE.PAGE -> {
+                                pageRepository.shortestPath(sourceTitle, targetTitle).map { it.toNode() }
+                            }
+
+                            TYPE.REDIRECT -> {
                                 redirectRepository
                                     .shortestPath(
                                         sourceTitle,
                                         targetTitle,
                                     ).map { it.toNode() }
+                            }
                         }.flatMapMany { dfsFlatten(it, sourceTitle, targetTitle) }
                     }.switchIfEmpty(Flux.empty())
             }
@@ -120,7 +130,7 @@ class PathService
                 getSourceType(sourceTitle)
                     .flatMapMany { type ->
                         when (type) {
-                            TYPE.PAGE ->
+                            TYPE.PAGE -> {
                                 pageRepository
                                     .shortestPaths(
                                         sourceTitle,
@@ -128,8 +138,9 @@ class PathService
                                         skip.takeIf { it >= 0 } ?: 0,
                                         limit.takeIf { it >= 0 } ?: 0,
                                     ).map { it.toNode() }
+                            }
 
-                            TYPE.REDIRECT ->
+                            TYPE.REDIRECT -> {
                                 redirectRepository
                                     .shortestPaths(
                                         sourceTitle,
@@ -137,6 +148,7 @@ class PathService
                                         skip.takeIf { it >= 0 } ?: 0,
                                         limit.takeIf { it >= 0 } ?: 0,
                                     ).map { it.toNode() }
+                            }
                         }.flatMapMany { dfsFlatten(it, sourceTitle, targetTitle) }
                             .onErrorResume(NoSuchElementException::class.java) {
                                 logger.error(
@@ -159,13 +171,17 @@ class PathService
                 getSourceType(sourceTitle)
                     .flatMapMany { type ->
                         when (type) {
-                            TYPE.PAGE -> pageRepository.shortestPaths(sourceTitle, targetTitle).map { it.toNode() }
-                            TYPE.REDIRECT ->
+                            TYPE.PAGE -> {
+                                pageRepository.shortestPaths(sourceTitle, targetTitle).map { it.toNode() }
+                            }
+
+                            TYPE.REDIRECT -> {
                                 redirectRepository
                                     .shortestPaths(
                                         sourceTitle,
                                         targetTitle,
                                     ).map { it.toNode() }
+                            }
                         }.flatMapMany { dfsFlatten(it, sourceTitle, targetTitle) }
                             .onErrorResume(NoSuchElementException::class.java) {
                                 logger.error(
