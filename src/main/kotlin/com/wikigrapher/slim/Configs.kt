@@ -75,7 +75,7 @@ class DefaultConfigs {
         return builder
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .defaultHeader("Api-User-Agent", RandomStringUtils.secure().nextAlphabetic(5))
-            .defaultHeader("Authorization", clientsProperties.wikipediaApi!!.accessToken)
+            .defaultHeader("Authorization", clientsProperties.wikipediaApi?.accessToken ?: "")
             .baseUrl(baseUrl)
             .build()
     }

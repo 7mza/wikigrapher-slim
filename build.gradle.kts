@@ -41,7 +41,7 @@ repositories {
 }
 
 val blockhoundVersion = "1.0.15.RELEASE"
-val htmlunitVersion = "4.18.0"
+val htmlunitVersion = "4.19.0"
 val mockitoAgent = configurations.create("mockitoAgent")
 val mockitoCoreVersion = "5.20.0"
 val mockitoKotlinVersion = "6.1.0"
