@@ -12,7 +12,7 @@ plugins {
     id("org.springframework.boot") version "3.5.8"
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("com.autonomousapps.dependency-analysis") version "3.5.0"
+    id("com.autonomousapps.dependency-analysis") version "3.5.1"
     id("com.bmuschko.docker-remote-api") version "10.0.0"
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.github.node-gradle.node") version "7.1.0"
