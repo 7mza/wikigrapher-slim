@@ -44,8 +44,8 @@ data class NodeSubDto(
     val id: String,
     var title: String,
     val type: TYPE,
-    val isTopParent: Boolean? = null,
-    val isBottomChild: Boolean? = null,
+    @JsonProperty("isTopParent") val isTopParent: Boolean? = null,
+    @JsonProperty("isBottomChild") val isBottomChild: Boolean? = null,
 ) {
     init {
         title = Commons.sanitizeOutput(title)

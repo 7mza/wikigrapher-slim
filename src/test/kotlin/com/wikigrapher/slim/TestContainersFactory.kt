@@ -1,11 +1,11 @@
 package com.wikigrapher.slim
 
-import org.testcontainers.containers.Neo4jContainer
 import org.testcontainers.containers.wait.strategy.Wait
+import org.testcontainers.neo4j.Neo4jContainer
 import org.testcontainers.utility.DockerImageName
 
 object TestContainersFactory {
-    fun neo4jContainer(): Neo4jContainer<*> =
+    fun neo4jContainer(): Neo4jContainer =
         Neo4jContainer(DockerImageName.parse("neo4j:community"))
             .withoutAuthentication()
             .withPlugins("apoc")

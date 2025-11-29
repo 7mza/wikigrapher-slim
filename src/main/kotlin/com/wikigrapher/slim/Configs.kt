@@ -26,6 +26,8 @@ import org.springframework.data.neo4j.core.transaction.ReactiveNeo4jTransactionM
 import org.springframework.data.neo4j.repository.config.ReactiveNeo4jRepositoryConfigurationExtension
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
@@ -35,6 +37,7 @@ import java.nio.charset.StandardCharsets
 class DefaultConfigs {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
+    // FIXME: https://spring.io/blog/2025/10/07/introducing-jackson-3-support-in-spring
     @Bean
     fun objectMapper(): ObjectMapper =
         ObjectMapper().apply {
@@ -56,19 +59,24 @@ class DefaultConfigs {
     fun wikipediaWebClient(
         builder: WebClient.Builder,
         clientsProperties: ClientsProperties,
+        objectMapper: ObjectMapper,
     ): WebClient {
         val baseUrl = clientsProperties.wikipediaWeb!!.getBaseUrl()
         logger.debug("wikipedia web baseUrl: {}", baseUrl)
         return builder
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .baseUrl(baseUrl)
-            .build()
+            .codecs {
+                it.defaultCodecs().jacksonJsonDecoder(Jackson2JsonDecoder(objectMapper))
+                it.defaultCodecs().jacksonJsonEncoder(Jackson2JsonEncoder(objectMapper))
+            }.build()
     }
 
     @Bean(name = ["wikipedia-api-client"])
     fun wikipediaApiClient(
         builder: WebClient.Builder,
         clientsProperties: ClientsProperties,
+        objectMapper: ObjectMapper,
     ): WebClient {
         val baseUrl = clientsProperties.wikipediaApi!!.getBaseUrl()
         logger.debug("wikipedia api baseUrl: {}", baseUrl)
@@ -77,7 +85,10 @@ class DefaultConfigs {
             .defaultHeader("Api-User-Agent", RandomStringUtils.secure().nextAlphabetic(5))
             .defaultHeader("Authorization", clientsProperties.wikipediaApi?.accessToken ?: "")
             .baseUrl(baseUrl)
-            .build()
+            .codecs {
+                it.defaultCodecs().jacksonJsonDecoder(Jackson2JsonDecoder(objectMapper))
+                it.defaultCodecs().jacksonJsonEncoder(Jackson2JsonEncoder(objectMapper))
+            }.build()
     }
 
     @Bean
@@ -134,7 +145,7 @@ class Neo4jConfigs
         fun cypherDslConfiguration(): org.neo4j.cypherdsl.core.renderer.Configuration =
             org.neo4j.cypherdsl.core.renderer.Configuration
                 .newConfig()
-                .withDialect(Dialect.NEO4J_5_26)
+                .withDialect(Dialect.NEO4J_5_DEFAULT_CYPHER)
                 .build()
 
         @Bean(ReactiveNeo4jRepositoryConfigurationExtension.DEFAULT_TRANSACTION_MANAGER_BEAN_NAME)

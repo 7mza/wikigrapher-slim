@@ -10,9 +10,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.wiremock.spring.ConfigureWireMock
+import org.wiremock.spring.EnableWireMock
 import reactor.test.StepVerifier
 
 @SpringBootTest(
@@ -22,7 +23,7 @@ import reactor.test.StepVerifier
         $$"clients.wikipedia-web.port=${wiremock.server.port}",
     ],
 )
-@AutoConfigureWireMock(port = 0)
+@EnableWireMock(value = [ConfigureWireMock(port = 0)])
 class WikiServiceTest {
     @Autowired
     private lateinit var service: IWikiService

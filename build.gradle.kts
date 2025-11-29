@@ -7,9 +7,9 @@ import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import org.owasp.dependencycheck.reporting.ReportGenerator.Format.HTML
 
 plugins {
-    kotlin("jvm") version "2.2.21"
-    kotlin("plugin.spring") version "2.2.21"
-    id("org.springframework.boot") version "3.5.8"
+    kotlin("jvm") version "2.3.0-RC"
+    kotlin("plugin.spring") version "2.3.0-RC"
+    id("org.springframework.boot") version "4.0.0"
     id("io.spring.dependency-management") version "1.1.7"
 
     id("com.autonomousapps.dependency-analysis") version "3.5.1"
@@ -26,7 +26,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(24)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -45,8 +45,9 @@ val htmlunitVersion = "4.19.0"
 val mockitoAgent = configurations.create("mockitoAgent")
 val mockitoCoreVersion = "5.20.0"
 val mockitoKotlinVersion = "6.1.0"
-val openapiVersion = "2.8.14"
-val springCloudVersion = "2025.0.0"
+val openapiVersion = "3.0.0"
+val springCloudVersion = "2025.1.0"
+val wiremockSpringBootVersion = "4.0.8"
 
 dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -62,22 +63,23 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-webclient")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     mockitoAgent("org.mockito:mockito-core:$mockitoCoreVersion") { isTransitive = false }
 
-    testImplementation("io.projectreactor:reactor-test")
     // testImplementation("io.projectreactor.tools:blockhound-junit-platform:$blockhoundVersion")
+    testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.htmlunit:htmlunit:$htmlunitVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webclient-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.springframework.cloud:spring-cloud-contract-wiremock")
-    // FIXME: https://github.com/testcontainers/testcontainers-java/issues/11212
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:neo4j")
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter")
+    testImplementation("org.testcontainers:testcontainers-neo4j")
+    testImplementation("org.wiremock.integrations:wiremock-spring-boot:$wiremockSpringBootVersion")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
