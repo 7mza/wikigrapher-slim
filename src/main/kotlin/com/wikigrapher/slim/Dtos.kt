@@ -3,11 +3,11 @@ package com.wikigrapher.slim
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonDeserializer
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import tools.jackson.core.JsonParser
+import tools.jackson.databind.DeserializationContext
+import tools.jackson.databind.ValueDeserializer
+import tools.jackson.databind.annotation.JsonDeserialize
+import tools.jackson.databind.node.ObjectNode
 
 data class CategorySubDto(
     val id: String,
@@ -117,13 +117,13 @@ data class ThumbnailDto(
     val height: Int? = null,
 )
 
-class ThumbnailDtoDeserializer : JsonDeserializer<ThumbnailDto>() {
+class ThumbnailDtoDeserializer : ValueDeserializer<ThumbnailDto>() {
     override fun deserialize(
         p: JsonParser,
-        ctxt: DeserializationContext?,
+        ctxt: DeserializationContext,
     ): ThumbnailDto {
-        val node: JsonNode = p.codec.readTree(p)
-        val source = node.get("source")?.asText() ?: node.get("url")?.asText()
+        val node: ObjectNode = p.readValueAsTree()
+        val source = node.get("source")?.asString() ?: node.get("url")?.asString()
         val width = node.get("width")?.asInt()
         val height = node.get("height")?.asInt()
         return ThumbnailDto(source = source, width = width, height = height)

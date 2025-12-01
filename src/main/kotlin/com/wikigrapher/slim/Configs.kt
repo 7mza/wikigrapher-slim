@@ -1,9 +1,5 @@
 package com.wikigrapher.slim
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.info.Info
@@ -14,6 +10,7 @@ import org.neo4j.driver.Driver
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -26,23 +23,21 @@ import org.springframework.data.neo4j.core.transaction.ReactiveNeo4jTransactionM
 import org.springframework.data.neo4j.repository.config.ReactiveNeo4jRepositoryConfigurationExtension
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.ObjectMapper
 import java.nio.charset.StandardCharsets
 
 @Configuration
 class DefaultConfigs {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    // FIXME: https://spring.io/blog/2025/10/07/introducing-jackson-3-support-in-spring
     @Bean
-    fun objectMapper(): ObjectMapper =
-        ObjectMapper().apply {
-            registerKotlinModule()
-            registerModule(JavaTimeModule())
+    fun jacksonCustomizer(): JsonMapperBuilderCustomizer =
+        JsonMapperBuilderCustomizer {
+            it.findAndAddModules()
         }
 
     @Bean
@@ -59,24 +54,19 @@ class DefaultConfigs {
     fun wikipediaWebClient(
         builder: WebClient.Builder,
         clientsProperties: ClientsProperties,
-        objectMapper: ObjectMapper,
     ): WebClient {
         val baseUrl = clientsProperties.wikipediaWeb!!.getBaseUrl()
         logger.debug("wikipedia web baseUrl: {}", baseUrl)
         return builder
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .baseUrl(baseUrl)
-            .codecs {
-                it.defaultCodecs().jacksonJsonDecoder(Jackson2JsonDecoder(objectMapper))
-                it.defaultCodecs().jacksonJsonEncoder(Jackson2JsonEncoder(objectMapper))
-            }.build()
+            .build()
     }
 
     @Bean(name = ["wikipedia-api-client"])
     fun wikipediaApiClient(
         builder: WebClient.Builder,
         clientsProperties: ClientsProperties,
-        objectMapper: ObjectMapper,
     ): WebClient {
         val baseUrl = clientsProperties.wikipediaApi!!.getBaseUrl()
         logger.debug("wikipedia api baseUrl: {}", baseUrl)
@@ -85,10 +75,7 @@ class DefaultConfigs {
             .defaultHeader("Api-User-Agent", RandomStringUtils.secure().nextAlphabetic(5))
             .defaultHeader("Authorization", clientsProperties.wikipediaApi?.accessToken ?: "")
             .baseUrl(baseUrl)
-            .codecs {
-                it.defaultCodecs().jacksonJsonDecoder(Jackson2JsonDecoder(objectMapper))
-                it.defaultCodecs().jacksonJsonEncoder(Jackson2JsonEncoder(objectMapper))
-            }.build()
+            .build()
     }
 
     @Bean

@@ -1,14 +1,13 @@
 package com.wikigrapher.slim
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import tools.jackson.databind.ObjectMapper
 
 class Commons {
     companion object {
         inline fun <reified T> parseJson(
             json: String,
             objectMapper: ObjectMapper,
-        ): T = objectMapper.readValue(json.trimIndent())
+        ): T = objectMapper.readValue(json.trimIndent(), T::class.java)
 
         // for neo4j
         fun sanitizeInput(input: String): String =

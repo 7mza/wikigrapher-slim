@@ -1,6 +1,5 @@
 package com.wikigrapher.slim.meta
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.wikigrapher.slim.Commons
 import com.wikigrapher.slim.DumpMetaDto
 import com.wikigrapher.slim.DumpNodes
@@ -12,6 +11,7 @@ import com.wikigrapher.slim.redirects.IRedirectRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import tools.jackson.databind.ObjectMapper
 
 interface IMetaService {
     fun findDumpMeta(): Mono<DumpMetaDto>

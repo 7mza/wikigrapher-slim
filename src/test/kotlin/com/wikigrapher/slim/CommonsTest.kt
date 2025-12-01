@@ -1,8 +1,8 @@
 package com.wikigrapher.slim
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import tools.jackson.databind.ObjectMapper
 
 class CommonsTest {
     data class Toto(
