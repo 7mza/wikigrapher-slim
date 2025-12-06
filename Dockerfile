@@ -4,7 +4,7 @@ COPY ./build/libs/*.jar app.jar
 RUN mkdir extracted
 RUN java -Djarmode=tools -jar app.jar extract --layers --destination extracted --launcher
 FROM eclipse-temurin:25-jre-alpine
-RUN apk update && apk upgrade && apk add curl jq && apk cache clean && rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade && apk add curl jq libgcc libstdc++ libc6-compat && apk cache clean && rm -rf /var/cache/apk/*
 WORKDIR /application
 COPY --from=builder /workspace/extracted/dependencies/ ./
 COPY --from=builder /workspace/extracted/spring-boot-loader/ ./

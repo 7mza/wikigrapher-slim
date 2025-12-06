@@ -51,8 +51,6 @@ management:
 server:
   compression:
     enabled: true
-  error:
-    include-message: always
   forward-headers-strategy: native
   http2:
     enabled: true
@@ -85,6 +83,9 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+  web:
+    error:
+      include-message: always
 springdoc:
   api-docs:
     path: /api-docs
