@@ -41,7 +41,6 @@ repositories {
 }
 
 val blockhoundVersion = "1.0.15.RELEASE"
-val htmlunitVersion = "4.19.0"
 val mockitoAgent = configurations.create("mockitoAgent")
 val mockitoCoreVersion = "5.20.0"
 val mockitoKotlinVersion = "6.1.0"
@@ -70,7 +69,7 @@ dependencies {
 
     // testImplementation("io.projectreactor.tools:blockhound-junit-platform:$blockhoundVersion")
     testImplementation("io.projectreactor:reactor-test")
-    testImplementation("org.htmlunit:htmlunit:$htmlunitVersion")
+    testImplementation("org.htmlunit:htmlunit")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
