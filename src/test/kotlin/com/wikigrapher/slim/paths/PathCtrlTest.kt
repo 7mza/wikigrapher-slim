@@ -14,6 +14,8 @@ import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
+import org.springframework.test.web.reactive.server.expectBodyList
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -65,7 +67,7 @@ class PathCtrlTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBody(Int::class.java)
+                .expectBody<Int>()
                 .returnResult()
                 .responseBody
         assertThat(response).isEqualTo(3)
@@ -81,7 +83,7 @@ class PathCtrlTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBodyList(RelationDto::class.java)
+                .expectBodyList<RelationDto>()
                 .returnResult()
                 .responseBody
         assertThat(response).isEqualTo(path)
@@ -97,7 +99,7 @@ class PathCtrlTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBodyList(RelationDto::class.java)
+                .expectBodyList<RelationDto>()
                 .returnResult()
                 .responseBody
         assertThat(response).isEqualTo(path)
@@ -113,7 +115,7 @@ class PathCtrlTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBodyList(RelationDto::class.java)
+                .expectBodyList<RelationDto>()
                 .returnResult()
                 .responseBody
         assertThat(response).isEqualTo(path)
@@ -129,7 +131,7 @@ class PathCtrlTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBodyList(RelationDto::class.java)
+                .expectBodyList<RelationDto>()
                 .returnResult()
                 .responseBody
         assertThat(response).isEqualTo(path)

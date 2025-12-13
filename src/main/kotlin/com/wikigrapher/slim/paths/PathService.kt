@@ -200,7 +200,7 @@ class PathService
             targetTitle: String,
         ): Flux<RelationDto> =
             Flux
-                .create<RelationDto> { emitter ->
+                .create { emitter ->
                     fun dfs(
                         node: TmpNode,
                         parent: TmpNode?,

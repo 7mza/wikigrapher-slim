@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 
 interface IWikiClient {
@@ -40,7 +41,7 @@ class WikiClient
                         .queryParam("pithumbsize", "{piThumbSize}")
                         .build(title, piThumbSize)
                 }.retrieve()
-                .bodyToMono(WikipediaPageImageDto::class.java)
+                .bodyToMono<WikipediaPageImageDto>()
 
         override fun getWikipediaPageTitle(title: String): Mono<SearchSuggestionsDto> {
             val project = "wikipedia"
@@ -55,6 +56,6 @@ class WikiClient
                         .queryParam("limit", "{limit}")
                         .build(project, language, title, limit)
                 }.retrieve()
-                .bodyToMono(SearchSuggestionsDto::class.java)
+                .bodyToMono<SearchSuggestionsDto>()
         }
     }

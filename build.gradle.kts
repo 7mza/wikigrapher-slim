@@ -7,8 +7,8 @@ import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import org.owasp.dependencycheck.reporting.ReportGenerator.Format.HTML
 
 plugins {
-    kotlin("jvm") version "2.3.0-RC2"
-    kotlin("plugin.spring") version "2.3.0-RC2"
+    kotlin("jvm") version "2.3.0-RC3"
+    kotlin("plugin.spring") version "2.3.0-RC3"
     id("org.springframework.boot") version "4.0.0"
     id("io.spring.dependency-management") version "1.1.7"
 
@@ -41,8 +41,8 @@ repositories {
 }
 
 val blockhoundVersion = "1.0.15.RELEASE"
-val mockitoAgent = configurations.create("mockitoAgent")
-val mockitoCoreVersion = "5.20.0"
+val mockitoAgent: Configuration = configurations.create("mockitoAgent")
+val mockitoCoreVersion = "5.21.0"
 val mockitoKotlinVersion = "6.1.0"
 val openapiVersion = "3.0.0"
 val springCloudVersion = "2025.1.0"

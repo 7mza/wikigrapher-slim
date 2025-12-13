@@ -15,6 +15,7 @@ import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -72,7 +73,7 @@ class WikiCtrlTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBody(ThumbnailDto::class.java)
+                .expectBody<ThumbnailDto>()
                 .returnResult()
                 .responseBody
         assertThat(response).isEqualTo(thumbnail)
@@ -88,7 +89,7 @@ class WikiCtrlTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBody(SearchSuggestionsDto::class.java)
+                .expectBody<SearchSuggestionsDto>()
                 .returnResult()
                 .responseBody
         assertThat(response).isEqualTo(pages)

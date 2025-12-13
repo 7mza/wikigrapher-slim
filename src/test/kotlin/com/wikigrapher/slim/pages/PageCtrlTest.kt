@@ -14,6 +14,7 @@ import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBodyList
 import reactor.core.publisher.Flux
 
 @WebFluxTest(controllers = [PageCtrl::class])
@@ -61,7 +62,7 @@ class PageCtrlTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBodyList(NodeDto::class.java)
+                .expectBodyList<NodeDto>()
                 .returnResult()
                 .responseBody
         assertThat(response?.size).isEqualTo(2)

@@ -12,6 +12,7 @@ import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
 
 @WebFluxTest(controllers = [MetaCtrl::class])
@@ -46,7 +47,7 @@ class MetaCtrlTest {
                 .exchange()
                 .expectStatus()
                 .isOk
-                .expectBody(DumpMetaDto::class.java)
+                .expectBody<DumpMetaDto>()
                 .returnResult()
                 .responseBody
         assertThat(response).isEqualTo(meta)
