@@ -7,9 +7,9 @@ import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import org.owasp.dependencycheck.reporting.ReportGenerator.Format.HTML
 
 plugins {
-    kotlin("jvm") version "2.3.0-RC3"
-    kotlin("plugin.spring") version "2.3.0-RC3"
-    id("org.springframework.boot") version "4.0.0"
+    kotlin("jvm") version "2.3.0"
+    kotlin("plugin.spring") version "2.3.0"
+    id("org.springframework.boot") version "4.0.1"
     id("io.spring.dependency-management") version "1.1.7"
 
     id("com.autonomousapps.dependency-analysis") version "3.5.1"
