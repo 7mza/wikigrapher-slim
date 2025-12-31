@@ -207,7 +207,7 @@ val prepareDockerContext by tasks.registering(Sync::class) {
 tasks.register<DockerBuildImage>("buildLocalDockerImage") {
     dependsOn(prepareDockerContext)
     inputDir.set(layout.buildDirectory.dir("docker-context"))
-    images.set(listOf("wikigrapher-slim:latest"))
+    images.set(listOf("${project.name}:latest"))
     outputs.cacheIf { true }
 }
 
