@@ -14,10 +14,7 @@ import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomize
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
-import org.springframework.core.io.buffer.DataBufferUtils
-import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.data.neo4j.core.ReactiveDatabaseSelectionProvider
 import org.springframework.data.neo4j.core.transaction.ReactiveNeo4jTransactionManager
 import org.springframework.data.neo4j.repository.config.ReactiveNeo4jRepositoryConfigurationExtension
@@ -172,32 +169,9 @@ class ReactiveAssetManifestReader(
 class ReactiveFileReader(
     private val resourceLoader: ResourceLoader,
 ) {
-    private fun readFileAsBytes(
-        path: String,
-        bufferSize: Int = 4096,
-    ): Mono<ByteArray> =
+    fun readFileAsString(path: String): Mono<String> =
         Mono
-            .fromCallable { resourceLoader.getResource(path) }
+            .fromCallable { resourceLoader.getResource(path).inputStream.use { it.readAllBytes() } }
             .subscribeOn(Schedulers.boundedElastic())
-            .flatMap { resource -> readFully(resource, bufferSize) }
-
-    fun readFileAsString(
-        path: String,
-        bufferSize: Int = 4096,
-    ): Mono<String> =
-        readFileAsBytes(path, bufferSize)
             .map { String(it, StandardCharsets.UTF_8) }
-
-    private fun readFully(
-        resource: Resource,
-        bufferSize: Int,
-    ): Mono<ByteArray> =
-        DataBufferUtils
-            .join(DataBufferUtils.read(resource, DefaultDataBufferFactory(), bufferSize))
-            .map {
-                val bytes = ByteArray(it.readableByteCount())
-                it.read(bytes)
-                DataBufferUtils.release(it)
-                bytes
-            }
 }
