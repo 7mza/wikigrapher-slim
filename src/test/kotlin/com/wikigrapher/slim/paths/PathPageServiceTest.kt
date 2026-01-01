@@ -60,7 +60,7 @@ class PathPageServiceTest {
     private lateinit var repo: IPageRepository
 
     @BeforeEach
-    fun init() {
+    fun beforeEach() {
         reactiveFileReader
             .readFileAsString("classpath:dump.cypher")
             .flatMap {
@@ -69,7 +69,7 @@ class PathPageServiceTest {
     }
 
     @AfterEach
-    fun clean() {
+    fun afterEach() {
         testDatabaseHelper.runCypherStatements(DELETE_ALL_QUERY).block()
     }
 

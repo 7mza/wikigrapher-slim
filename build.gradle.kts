@@ -44,7 +44,7 @@ val blockhoundVersion = "1.0.15.RELEASE"
 val mockitoAgent: Configuration = configurations.create("mockitoAgent")
 val mockitoCoreVersion = "5.21.0"
 val mockitoKotlinVersion = "6.1.0"
-val openapiVersion = "3.0.0"
+val openapiVersion = "3.0.1"
 val springCloudVersion = "2025.1.0"
 val wiremockSpringBootVersion = "4.0.8"
 

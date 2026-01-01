@@ -50,7 +50,7 @@ class MetaServiceTest {
     private lateinit var reactiveFileReader: ReactiveFileReader
 
     @BeforeEach
-    fun init() {
+    fun beforeEach() {
         reactiveFileReader
             .readFileAsString("classpath:dump.cypher")
             .flatMap {
@@ -59,7 +59,7 @@ class MetaServiceTest {
     }
 
     @AfterEach
-    fun clean() {
+    fun afterEach() {
         testDatabaseHelper.runCypherStatements(DELETE_ALL_QUERY).block()
     }
 
