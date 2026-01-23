@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "esModuleInterop": true,
+    "isolatedModules": true,
     "lib": ["ES6", "DOM"],
     "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "strict": true,
     "target": "ES5"
-  }
+  },
+  "exclude": ["build", "node_modules"]
 }

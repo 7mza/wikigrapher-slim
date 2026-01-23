@@ -50,12 +50,12 @@ export default {
               presets: [
                 [
                   '@babel/preset-env',
-                  { modules: false, useBuiltIns: 'entry', corejs: 3 },
+                  { modules: false, useBuiltIns: 'entry', corejs: 3.48 },
                 ],
+                ['@babel/preset-typescript'],
               ],
             },
           },
-          { loader: 'ts-loader', options: { transpileOnly: true } },
         ],
       },
       {
@@ -112,16 +112,19 @@ export default {
       output: 'asset-manifest.json',
       publicPath: '/dist/',
       writeToDisk: true,
-      customize(entry) {
-        const cleanKey = entry.key.split('?')[0];
+      customize(entry, original, manifest, asset) {
+        if (asset?.source?.size() === 0) {
+          return false;
+        }
         return {
-          key: cleanKey,
+          key: entry.key.split('?')[0],
           value: entry.value,
         };
       },
     }),
   ],
   optimization: {
+    runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
     },

@@ -3,7 +3,6 @@ package com.wikigrapher.slim
 import com.wikigrapher.slim.meta.IMetaService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,12 +19,6 @@ interface IWeb {
         @RequestParam(value = "skip", required = false) skip: String?,
         @RequestParam(value = "limit", required = false) limit: String?,
     ): Mono<Rendering>
-
-    @GetMapping("/fragments")
-    fun getFragments(): Mono<Rendering>
-
-    @GetMapping("/favicon.ico")
-    fun noFavicon(): Mono<ResponseEntity<Void>>
 }
 
 @Controller
@@ -70,16 +63,6 @@ class WebCtrl
                             ).build()
                     }
                 }
-
-        override fun getFragments(): Mono<Rendering> =
-            assetManifestReader.getAll().map {
-                Rendering
-                    .view("fragments")
-                    .modelAttribute("assetManifest", it)
-                    .build()
-            }
-
-        override fun noFavicon(): Mono<ResponseEntity<Void>> = Mono.just(ResponseEntity.noContent().build())
 
         private fun fallBackDumpMeta(): Mono<DumpMetaDto> =
             Mono.just(

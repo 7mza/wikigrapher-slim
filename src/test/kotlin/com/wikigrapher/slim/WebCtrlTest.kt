@@ -101,6 +101,7 @@ class WebCtrlTest {
                 assetManifestReader.get("paths.js").block(),
                 assetManifestReader.get("shared.js").block(),
                 assetManifestReader.get("vendor.js").block(),
+                assetManifestReader.get("runtime.js").block(),
             )
 
         val stylesheetLinks = page.getByXPath<HtmlLink>("//link[@rel='stylesheet']")

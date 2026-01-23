@@ -9,7 +9,7 @@ import org.owasp.dependencycheck.reporting.ReportGenerator.Format.HTML
 plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.spring") version "2.3.0"
-    id("org.springframework.boot") version "4.0.1"
+    id("org.springframework.boot") version "4.0.2"
     id("io.spring.dependency-management") version "1.1.7"
 
     id("com.autonomousapps.dependency-analysis") version "3.5.1"
@@ -17,7 +17,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.github.node-gradle.node") version "7.1.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
-    id("org.owasp.dependencycheck") version "12.1.9"
+    id("org.owasp.dependencycheck") version "12.2.0"
     jacoco
 }
 
@@ -40,13 +40,13 @@ repositories {
     mavenCentral()
 }
 
-val blockhoundVersion = "1.0.15.RELEASE"
+val blockhoundVersion = "1.0.16.RELEASE"
 val mockitoAgent: Configuration = configurations.create("mockitoAgent")
 val mockitoCoreVersion = "5.21.0"
-val mockitoKotlinVersion = "6.1.0"
+val mockitoKotlinVersion = "6.2.2"
 val openapiVersion = "3.0.1"
 val springCloudVersion = "2025.1.0"
-val wiremockSpringBootVersion = "4.0.8"
+val wiremockSpringBootVersion = "4.0.9"
 
 dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

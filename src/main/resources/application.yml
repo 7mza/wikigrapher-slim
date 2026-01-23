@@ -12,22 +12,30 @@ init:
   paths:
     - source: Gandalf
       target: Tetris
-    - source: Paris
-      target: Johannesburg
     - source: Albus_Dumbledore
       target: Poker
-    - source: Coca-Cola
-      target: Ketchup
-    - source: Fallout_(franchise)
-      target: Uno_(card_game)
-    - source: Tetris
-      target: Tour_de_France
+    - source: L'Avare_(film)
+      target: H._P._Lovecraft
+    - source: Alexandre_Dumas,_père
+      target: Pizza
     - source: Titanic
       target: Zoolander
     - source: China
-      target: Great_Pyramid_of_Cholula
+      target: Tutankhamun's_mummy
     - source: United_States
       target: Nokia_3310
+    - source: Batzorig_Vaanchig
+      target: Mohamed_Bajeddoub
+    - source: Flatulence_humor
+      target: List_of_unsolved_problems_in_mathematics
+    - source: Toilet_paper_orientation
+      target: Trump_Steaks
+    - source: Michael_Scott_(The_Office)
+      target: Prison
+    - source: Kevin_Bacon
+      target: Bacon
+    - source: Mexico
+      target: Moustache
 logging:
   include-application-name: false
   level:
@@ -74,7 +82,7 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: 30s
   main:
-    banner-mode: 'off'
+    banner-mode: off
   neo4j:
     authentication:
       password: ${NEO4J_PASSWORD}
