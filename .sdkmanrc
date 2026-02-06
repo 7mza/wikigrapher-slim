@@ -1,4 +1,4 @@
 # Enable auto-env through the sdkman_auto_env config
 # Add key=value pairs of SDKs to use below
-java=25.0.1.crac-zulu
-gradle=9.3.0
+java=25.0.2-zulu
+gradle=9.3.1
