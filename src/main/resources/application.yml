@@ -63,7 +63,6 @@ server:
   http2:
     enabled: true
   port: 8080
-  shutdown: graceful
   ssl:
     enabled: false
 spring:
@@ -76,11 +75,9 @@ spring:
     compose:
       enabled: true
       file: compose.spring.yml
-  http:
-    codecs:
-      log-request-details: true
-  lifecycle:
-    timeout-per-shutdown-phase: 30s
+      profiles:
+        active:
+          - neo4j
   main:
     banner-mode: off
   neo4j:
@@ -91,6 +88,8 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+  thymeleaf:
+    cache: false
   web:
     error:
       include-message: always

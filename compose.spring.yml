@@ -1,40 +1,10 @@
 services:
   neo4j:
-    image: neo4j:community
-    mem_limit: 8g
-    restart: unless-stopped
-    ports:
-      - '7474:7474'
-      - '7687:7687'
-    environment:
-      - NEO4J_AUTH=${NEO4J_USERNAME}/${NEO4J_PASSWORD}
-      - NEO4J_PLUGINS=["apoc", "apoc-extended"]
-      - NEO4J_apoc_export_file_enabled=true
-      - NEO4J_apoc_import_file_enabled=true
-      - NEO4J_client_allow__telemetry=false
-      - NEO4J_dbms_security_procedures_allowlist=apoc.*
-      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
-      - NEO4J_dbms_usage__report_enabled=false
-      - NEO4J_server_bolt_telemetry_enabled=false
-      - NEO4J_server_directories_import=import
-      - NEO4J_server_jvm_additional=-XX:+ExitOnOutOfMemoryError -XX:+UseStringDeduplication --add-modules=jdk.incubator.vector
-      - NEO4J_server_memory_heap_initial__size=3600m
-      - NEO4J_server_memory_heap_max__size=3600m
-      - NEO4J_server_memory_pagecache_size=2g
-    healthcheck:
-      test:
-        [
-          'CMD',
-          'sh',
-          '-c',
-          'neo4j-admin server status | grep -q "Neo4j is running" || exit 1',
-        ]
-      start_period: 30s
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    volumes:
-      - neo4j_data:/data/
+    extends:
+      file: compose.yml
+      service: neo4j
+    profiles:
+      - neo4j
 
 volumes:
   neo4j_data:

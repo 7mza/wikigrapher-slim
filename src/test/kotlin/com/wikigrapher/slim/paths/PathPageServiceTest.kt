@@ -294,10 +294,10 @@ class PathPageServiceTest {
                     assertThat(first.source.isBottomChild).isNull()
 
                     val last = it.last()
-                    assertThat(last.target.title).isEqualTo("celebrimbor")
-                    assertThat(last.target.type).isEqualTo(TYPE.PAGE)
+                    assertThat(last.target.title).isEqualTo("the bright lord")
+                    assertThat(last.target.type).isEqualTo(TYPE.REDIRECT)
                     assertThat(last.target.isTopParent).isNull()
-                    assertThat(last.target.isBottomChild).isTrue
+                    assertThat(last.target.isBottomChild).isNull()
 
                     assertThat(Commons.isPathConnected(it))
                 }

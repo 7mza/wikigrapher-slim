@@ -41,21 +41,21 @@ RETURN length(path)
 MATCH (source:redirect {title: $sourceTitle})
 MATCH (target:page|redirect {title: $targetTitle})
 OPTIONAL MATCH (redirects:redirect)-[:redirect_to]->(target)
-CALL (source, target) {
-  MATCH path = SHORTESTPATH((source)-[:link_to|redirect_to*1..100]->(target))
-  RETURN length(path) AS len
-}
+MATCH paths = allShortestPaths((source)-[:link_to|redirect_to*1..20]->(target))
+WITH paths AS tmp, length(paths) AS len, source, redirects
 CALL
   apoc.cypher.run(
-    "CALL (source, target, len, redirects) {
-      MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(target))
-      RETURN paths
-      UNION
-      OPTIONAL MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(redirects))
-      RETURN paths
-    }
-    RETURN paths",
-    {source: source, target: target, len:len, redirects:redirects}
+    "CALL (source, len, redirects, tmp) {
+        OPTIONAL MATCH paths = ALLSHORTESTPATHS(
+          (source)-[:link_to|redirect_to*1.." + len + "]->(redirects)
+        )
+        RETURN paths
+        UNION
+        RETURN tmp as paths }
+        WITH paths, [node IN nodes(paths) | node.title] AS titles
+        ORDER BY titles
+        RETURN paths",
+    {source: source, redirects: redirects, len: len, tmp:tmp}
   )
 YIELD value
 WITH DISTINCT value.paths AS paths
@@ -74,21 +74,21 @@ RETURN COLLECT(paths)
 MATCH (source:redirect {title: $sourceTitle})
 MATCH (target:page|redirect {title: $targetTitle})
 OPTIONAL MATCH (redirects:redirect)-[:redirect_to]->(target)
-CALL (source, target) {
-  MATCH path = SHORTESTPATH((source)-[:link_to|redirect_to*1..100]->(target))
-  RETURN length(path) AS len
-}
+MATCH paths = allShortestPaths((source)-[:link_to|redirect_to*1..20]->(target))
+WITH paths AS tmp, length(paths) AS len, source, redirects
 CALL
   apoc.cypher.run(
-    "CALL (source, target, len, redirects) {
-      MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(target))
-      RETURN paths
-      UNION
-      OPTIONAL MATCH paths = ALLSHORTESTPATHS((source)-[:link_to|redirect_to*1.." + len + "]->(redirects))
-      RETURN paths
-    }
-    RETURN paths",
-    {source: source, target: target, len:len, redirects:redirects}
+    "CALL (source, len, redirects, tmp) {
+        OPTIONAL MATCH paths = ALLSHORTESTPATHS(
+          (source)-[:link_to|redirect_to*1.." + len + "]->(redirects)
+        )
+        RETURN paths
+        UNION
+        RETURN tmp as paths }
+        WITH paths, [node IN nodes(paths) | node.title] AS titles
+        ORDER BY titles
+        RETURN paths",
+    {source: source, redirects: redirects, len: len, tmp:tmp}
   )
 YIELD value
 WITH DISTINCT value.paths AS paths
