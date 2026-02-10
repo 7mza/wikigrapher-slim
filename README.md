@@ -53,7 +53,7 @@ npm run build:dev && ./gradlew clean ktlintFormat ktlintCheck build -Pmode=devel
 spring is configured with compose support, run with ide or
 
 ```shell
-./gradlew buildLocalDockerImage
+./gradlew jibDockerBuild
 ```
 
 ```shell

@@ -13,7 +13,7 @@ services:
       - NEO4J_PASSWORD=${NEO4J_PASSWORD}
       - NEO4J_USERNAME=${NEO4J_USERNAME}
       - WIKIPEDIA_API_ACCESS_TOKEN=${WIKIPEDIA_API_ACCESS_TOKEN}
-      - JAVA_TOOL_OPTIONS=-XX:+UseG1GC -XX:+UseStringDeduplication
+      - JAVA_TOOL_OPTIONS=-XX:+UseG1GC -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED
     depends_on:
       neo4j:
         condition: service_healthy
@@ -23,7 +23,7 @@ services:
           'CMD',
           'sh',
           '-c',
-          'curl -fs localhost/actuator/health | jq .status | grep -q "UP" || exit 1',
+          'wget -qO- localhost/actuator/health/liveness | grep -q "UP" || exit 1',
         ]
       start_period: 30s
       interval: 30s

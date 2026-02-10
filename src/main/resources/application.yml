@@ -49,19 +49,18 @@ management:
       group:
         readiness:
           include: '*'
-      probes:
-        enabled: true
       show-details: ALWAYS
   endpoints:
     web:
       exposure:
         include: '*'
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
 server:
-  compression:
-    enabled: true
   forward-headers-strategy: native
-  http2:
-    enabled: true
   port: 8080
   ssl:
     enabled: false
@@ -71,6 +70,9 @@ spring:
   config:
     activate:
       on-profile: default
+  devtools:
+    livereload:
+      enabled: true
   docker:
     compose:
       enabled: true
@@ -113,5 +115,14 @@ spring:
   config:
     activate:
       on-profile: docker
+  devtools:
+    add-properties: false
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+  docker:
+    compose:
+      enabled: false
   neo4j:
     uri: bolt://neo4j:7687

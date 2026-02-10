@@ -1,4 +1,3 @@
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.github.gradle.node.npm.task.NpmTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
@@ -13,9 +12,9 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 
     id("com.autonomousapps.dependency-analysis") version "3.5.1"
-    id("com.bmuschko.docker-remote-api") version "10.0.0"
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.github.node-gradle.node") version "7.1.0"
+    id("com.google.cloud.tools.jib") version "3.5.3"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
     id("org.owasp.dependencycheck") version "12.2.0"
     jacoco
@@ -184,34 +183,21 @@ tasks.jar {
     enabled = false
 }
 
-val prepareDockerContext by tasks.registering(Sync::class) {
-    dependsOn(tasks.bootJar)
-    project.tasks.findByName("npm_run_build")?.let {
-        dependsOn(it)
+jib {
+    from {
+        image = "eclipse-temurin:25-jre-alpine"
     }
-    inputs.files(
-        fileTree("src") {
-            exclude("main/resources/static/dist/**")
-        },
-    )
-    outputs.dir(layout.buildDirectory.dir("docker-context"))
-    from("Dockerfile")
-    from("build/libs") {
-        into("build/libs")
+    to {
+        tags = setOf("latest")
     }
-    into(layout.buildDirectory.dir("docker-context"))
+    container {
+        ports = listOf("80")
+    }
 }
 
-tasks.register<DockerBuildImage>("buildLocalDockerImage") {
-    dependsOn(prepareDockerContext)
-    inputDir.set(layout.buildDirectory.dir("docker-context"))
-    images.set(listOf("${project.name}:latest"))
-    outputs.cacheIf { true }
+tasks.jibDockerBuild {
+    dependsOn(tasks.build)
 }
-
-// tasks.check {
-//    finalizedBy("buildLocalDockerImage")
-// }
 
 dependencyCheck {
     // https://nvd.nist.gov/developers/request-an-api-key
